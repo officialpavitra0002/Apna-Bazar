@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#ff6b1a"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Apna Bazar"/>
+<link rel="manifest" id="pwa-manifest"/>
+<title>Apna Bazar — India Ka Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0a0a12;--bg2:#0f0f1a;--bg3:#141423;
+  --card:#181828;--card2:#1e1e30;--card3:#252538;
+  --bdr:#2a2a42;--bdr2:#363655;
+  --txt:#f0f0ff;--txt2:#b0b0d0;--txt3:#7070a0;--txt4:#404060;
+  --or:#ff6b1a;--or2:#ff8c42;--or3:#ffa866;
+  --bl:#3d7fff;--gr:#00e090;--rd:#ff4466;--gd:#ffd740;--pu:#9b59b6;
+  --font:'Baloo 2','Noto Sans Devanagari',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;font-size:14px}
+body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:14px;-webkit-tap-highlight-color:transparent;color:var(--txt);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+html,body{height:100%}
+#app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column;position:relative;overflow:hidden}
+::-webkit-scrollbar{display:none}
+button{font-family:var(--font);cursor:pointer;border:none;outline:none;transition:all .18s}
+input,textarea,select{font-family:var(--font);outline:none;-webkit-appearance:none;color:var(--txt)}
+select option{background:var(--bg3)}
+.page{display:none;flex-direction:column;position:absolute;inset:0;z-index:1}
+.page.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes ringPulse{0%,100%{transform:scale(.9);opacity:.5}50%{transform:scale(1.08);opacity:1}}
+@keyframes logoBounce{0%,100%{box-shadow:0 0 40px rgba(255,107,26,.7),0 0 80px rgba(255,107,26,.3)}50%{box-shadow:0 0 60px rgba(255,107,26,.95),0 0 120px rgba(255,107,26,.5)}}
+@keyframes loadBar{0%{width:0}60%{width:78%}85%{width:93%}100%{width:100%}}
+@keyframes ldot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.1);opacity:1}}
+@keyframes btnShine{0%{left:-60%}100%{left:160%}}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes sellGlow{0%,100%{box-shadow:0 0 18px rgba(255,107,26,.5),0 0 36px rgba(255,107,26,.2)}50%{box-shadow:0 0 30px rgba(255,107,26,.85),0 0 60px rgba(255,107,26,.38)}}
+@keyframes notifPop{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+@keyframes popIn{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+@keyframes typingDot{0%,60%,100%{transform:scale(.7);opacity:.4}30%{transform:scale(1.1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes slideRight{from{transform:translateX(-100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideLeft{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* LOADING */
+#pg-loading{background:radial-gradient(ellipse 80% 60% at 50% 40%,#1a0a2e,#0a0a12 70%);align-items:center;justify-content:center;flex-direction:column}
+.lr-wrap{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center;margin-bottom:28px}
+.lr{position:absolute;border-radius:50%;animation:ringPulse 2s ease-in-out infinite}
+.lr1{width:160px;height:160px;background:radial-gradient(circle,rgba(255,107,26,.14),transparent 70%)}
+.lr2{width:118px;height:118px;background:radial-gradient(circle,rgba(255,107,26,.25),transparent 70%);animation-delay:.3s}
+.lr3{width:82px;height:82px;background:radial-gradient(circle,rgba(255,107,26,.45),transparent 70%);animation-delay:.6s}
+.ll{width:74px;height:74px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:20px;display:flex;align-items:center;justify-content:center;position:relative;z-index:2;animation:logoBounce 1.8s ease-in-out infinite}
+.lb{font-size:30pxpx;font-weight:800;background:linear-gradient(135deg,#ff8c42,#ffd740);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px}
+.lt{color:var(--txt3);font-size:13pxpx;margin-bottom:28px}
+.lbw{width:180px;height:4px;background:var(--card2);border-radius:4px;overflow:hidden}
+.lba{height:100%;background:linear-gradient(90deg,var(--or),var(--or2),var(--gd));border-radius:4px;animation:loadBar 2.2s ease-in-out forwards}
+.ld-dots{display:flex;gap:6px;margin-top:14px}
+.ld{width:7px;height:7px;border-radius:50%;animation:ldot 1.2s ease-in-out infinite}
+.ld:nth-child(1){background:var(--or)}.ld:nth-child(2){background:var(--or2);animation-delay:.2s}.ld:nth-child(3){background:var(--gd);animation-delay:.4s}
+
+/* LOGIN / OTP */
+#pg-login{background:linear-gradient(160deg,#0d0d20,#12101e 50%,#0a0f1a);overflow-y:auto}
+.lo-top{padding:36px 24px 20px;text-align:center}
+.lo-logo{width:66px;height:66px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:19px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(255,107,26,.6),0 0 60px rgba(255,107,26,.2);margin-bottom:12px;animation:logoBounce 2s ease-in-out infinite}
+.lo-brand{font-size:26pxpx;font-weight:800;background:linear-gradient(135deg,#ff8c42,#ffd740);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lo-sub{color:var(--txt3);font-size:12pxpx;margin-top:2px}
+.role-row{display:flex;gap:10px;padding:0 24px;margin-bottom:20px}
+.role-card{flex:1;background:var(--card);border:2px solid var(--bdr);border-radius:18px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .22s;position:relative;overflow:hidden}
+.role-card.sel{border-color:var(--or);background:rgba(255,107,26,.08);box-shadow:0 0 24px rgba(255,107,26,.2)}
+.role-chk{position:absolute;top:8px;right:8px;width:20px;height:20px;background:var(--or);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:11pxpx;color:#fff;font-weight:800}
+.role-card.sel .role-chk{display:flex}
+.lo-form{padding:0 24px 36px}
+.lf-lbl{color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px;display:block}
+.lf-inp{width:100%;background:var(--card2);border:1.5px solid var(--bdr);border-radius:12px;padding:13px 15px;font-size:13pxpx;font-weight:500;margin-bottom:13px;transition:all .2s}
+.lf-inp:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(255,107,26,.12)}
+.lf-inp::placeholder{color:var(--txt4)}
+.lf-inp.shake{animation:shake .4s ease}
+.btn-start{width:100%;background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;font-weight:800;font-size:15pxpx;padding:15px;border-radius:15px;box-shadow:0 6px 28px rgba(255,107,26,.4);margin-bottom:10px;position:relative;overflow:hidden}
+.btn-start::before{content:'';position:absolute;top:-50%;left:-60%;width:50%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:skewX(-20deg);animation:btnShine 3s ease-in-out infinite}
+.btn-start:active{transform:scale(.97)}
+/* OTP boxes */
+.otp-row{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.otp-b{width:56px;height:60px;text-align:center;background:var(--card2);border:2px solid var(--bdr);border-radius:13px;font-size:24pxpx;font-weight:800;transition:all .2s}
+.otp-b:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(255,107,26,.15)}
+.otp-resend{text-align:center;color:var(--txt4);font-size:12pxpx;margin-top:8px;cursor:pointer}
+.otp-resend span{color:var(--or2);font-weight:700}
+
+/* MAIN */
+#pg-main{overflow:hidden}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:10px 14px 9px;flex-shrink:0}
+.hdr-r1{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.hdr-brand{font-size:19pxpx;font-weight:800;background:linear-gradient(135deg,#ff8c42,#ffd740);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;cursor:pointer}
+.hdr-acts{display:flex;gap:5px}
+.hbtn{background:var(--card2);border:1px solid var(--bdr);border-radius:10px;padding:7px 9px;color:var(--txt3);display:flex;align-items:center;justify-content:center;position:relative;transition:all .15s}
+.hbtn:active{background:var(--card3)}
+.hbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hbtn-dot{position:absolute;top:-3px;right:-3px;width:9px;height:9px;background:var(--rd);border-radius:50%;border:2px solid var(--bg2);animation:notifPop 1.5s ease infinite}
+.srch-area{display:flex;gap:7px;align-items:center}
+.srch-box{flex:1;position:relative}
+.srch-box .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;fill:none;stroke:var(--txt4);stroke-width:2.5;stroke-linecap:round;pointer-events:none}
+.srch-inp{width:100%;background:var(--card2);border:1.5px solid var(--bdr);border-radius:11px;padding:9px 36px 9px 32px;font-size:13pxpx;transition:all .2s}
+.srch-inp:focus{border-color:var(--or);box-shadow:0 0 0 2px rgba(255,107,26,.1)}
+.srch-inp::placeholder{color:var(--txt4)}
+.mic-btn{position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;padding:0;display:flex;align-items:center}
+.mic-btn svg{width:14px;height:14px;fill:none;stroke:var(--txt4);stroke-width:2;stroke-linecap:round}
+.filter-fab{background:var(--card2);border:1.5px solid var(--bdr);border-radius:11px;padding:9px 11px;display:flex;align-items:center;gap:5px;color:var(--txt3);font-size:11pxpx;font-weight:700;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.filter-fab.active{background:rgba(255,107,26,.15);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.filter-fab svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.f-cnt{background:var(--or);border-radius:7px;min-width:15px;height:15px;font-size:11pxpx;color:#fff;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0 3px}
+
+/* SEARCH SUGGESTIONS */
+.srch-sugg{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;z-index:100;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5);animation:fadeUp .15s ease}
+.sugg-item{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s;font-size:13pxpx}
+.sugg-item:hover,.sugg-item:active{background:var(--card2)}
+.sugg-item svg{width:14px;height:14px;fill:none;stroke:var(--txt4);stroke-width:2;stroke-linecap:round;flex-shrink:0}
+
+/* FILTER PANEL */
+.sfp{position:fixed;inset:0;z-index:180;display:none;align-items:flex-end;justify-content:center;max-width:430px;left:50%;transform:translateX(-50%)}
+.sfp.open{display:flex}
+.sfp-bg{position:absolute;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(4px)}
+.sfp-sheet{background:var(--bg2);border-radius:24px 24px 0 0;border:1px solid var(--bdr);width:100%;max-height:90vh;overflow-y:auto;position:relative;z-index:2;animation:slideUp .28s cubic-bezier(.34,1.2,.64,1)}
+.sfp-hdr{display:flex;justify-content:space-between;align-items:center;padding:16px 18px 12px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bg2);z-index:3}
+.sfp-body{padding:14px 18px 10px}
+.sfp-sec{margin-bottom:16px}
+.sfp-sec-ttl{color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cat-btn{background:var(--card2);border:1.5px solid var(--bdr);border-radius:10px;padding:9px 6px;text-align:center;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.cat-btn svg{width:20px;height:20px;fill:none;stroke:var(--txt3);stroke-width:1.8;stroke-linecap:round;transition:stroke .15s}
+.cat-btn span{color:var(--txt3);font-size:11pxpx;font-weight:600;transition:color .15s}
+.cat-btn.on{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.45)}
+.cat-btn.on svg{stroke:var(--or2)}.cat-btn.on span{color:var(--or3)}
+.cat-btn:active{transform:scale(.93)}
+.cond-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cond-f{background:var(--card2);border:1.5px solid var(--bdr);border-radius:20px;padding:6px 13px;font-size:11pxpx;color:var(--txt3);font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all .15s}
+.cond-f.on{background:rgba(255,107,26,.15);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.price-row{display:flex;gap:8px;align-items:center;margin-top:4px}
+.pi{flex:1;background:var(--card3);border:1.5px solid var(--bdr);border-radius:10px;padding:10px 12px;font-size:13pxpx;font-family:'Baloo 2',sans-serif}
+.pi:focus{border-color:var(--or)}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.feat-t{background:var(--card2);border:1.5px solid var(--bdr);border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:7px;cursor:pointer;transition:all .15s}
+.feat-t.on{background:rgba(255,107,26,.1);border-color:rgba(255,107,26,.35);color:var(--or3)}
+.feat-t svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.feat-t span{font-size:11pxpx;font-weight:600}
+.sort-btns{display:flex;gap:6px;flex-wrap:wrap}
+.sort-b{background:var(--card2);border:1.5px solid var(--bdr);border-radius:10px;padding:8px 11px;font-size:11pxpx;font-weight:600;color:var(--txt3);cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all .15s}
+.sort-b.on{background:rgba(255,107,26,.15);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.sfp-actions{display:flex;gap:9px;padding:12px 18px 24px;position:sticky;bottom:0;background:var(--bg2);border-top:1px solid var(--bdr)}
+.btn-clear{flex:.4;background:var(--card2);border:1.5px solid var(--bdr);border-radius:12px;padding:12px;color:var(--txt3);font-weight:700;font-size:13pxpx;font-family:'Baloo 2',sans-serif}
+.btn-apply{flex:1;background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;font-weight:800;font-size:13pxpx;padding:12px;border-radius:12px;box-shadow:0 4px 20px rgba(255,107,26,.35);font-family:'Baloo 2',sans-serif;position:relative;overflow:hidden}
+.btn-apply::before{content:'';position:absolute;top:-50%;left:-60%;width:50%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:btnShine 3s ease-in-out infinite}
+
+/* ACTIVE FILTER BAR */
+.afbar{display:flex;gap:6px;overflow-x:auto;padding:6px 14px 0;flex-shrink:0}
+.aftag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,107,26,.12);border:1px solid rgba(255,107,26,.3);border-radius:20px;padding:4px 10px;font-size:11pxpx;color:var(--or3);font-weight:600;white-space:nowrap;animation:fadeIn .2s}
+.aftag button{background:none;padding:0;font-size:12pxpx;color:var(--or3);line-height:1;margin-left:1px}
+
+/* TICKER */
+.tkr{background:linear-gradient(90deg,rgba(255,107,26,.07),rgba(61,127,255,.05),rgba(255,107,26,.07));border-bottom:1px solid rgba(255,107,26,.13);padding:5px 0;overflow:hidden;flex-shrink:0}
+.tkri{display:flex;white-space:nowrap;animation:ticker 28s linear infinite}
+.tkrt{display:inline-flex;align-items:center;gap:5px;padding:0 18px;font-size:11pxpx;color:var(--txt2);font-weight:600}
+.tktag{background:var(--or);border-radius:4px;padding:1px 6px;font-size:11pxpx;color:#fff;font-weight:800}
+.tktag.g{background:var(--gr);color:#000}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding-bottom:68px;-webkit-overflow-scrolling:touch}
+.tp{display:none}.tp.active{display:block;animation:fadeUp .22s ease}
+
+/* HERO */
+.hero{margin:12px 14px 0;background:linear-gradient(135deg,rgba(255,107,26,.14),rgba(61,127,255,.07));border:1px solid rgba(255,107,26,.18);border-radius:18px;padding:15px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:-40px;right:-25px;width:140px;height:140px;background:radial-gradient(circle,rgba(255,107,26,.17),transparent 70%);pointer-events:none}
+
+/* CATS */
+.hcats{display:flex;gap:7px;overflow-x:auto;padding:10px 14px 3px}
+.hcat{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.hcat-ico{width:50px;height:50px;background:var(--card2);border:1.5px solid var(--bdr);border-radius:13px;display:flex;align-items:center;justify-content:center;transition:all .18s;position:relative}
+.hcat-ico svg{width:24px;height:24px;fill:none;stroke:var(--txt3);stroke-width:1.8;stroke-linecap:round;transition:stroke .18s}
+.hcat.on .hcat-ico{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.45);box-shadow:0 0 14px rgba(255,107,26,.18)}
+.hcat.on .hcat-ico svg{stroke:var(--or2)}
+.hcat-cnt{position:absolute;top:-5px;right:-5px;background:var(--or);border-radius:7px;min-width:15px;height:15px;font-size:11pxpx;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid var(--bg)}
+.hcat-lbl{font-size:11pxpx;color:var(--txt3);font-weight:600;text-align:center}
+
+/* LISTINGS */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;padding:10px 14px 5px}
+.sec-ttl{color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.lst-toolbar{display:flex;justify-content:space-between;align-items:center;padding:6px 0 5px}
+.lst-count{color:var(--txt);font-weight:700;font-size:12pxpx}
+.listing{background:var(--card);border:1px solid var(--bdr);border-radius:15px;overflow:hidden;margin-bottom:9px;cursor:pointer;transition:all .15s;position:relative;animation:fadeUp .3s ease backwards}
+.listing:active{transform:scale(.98)}
+.listing.featured{border-color:rgba(255,215,64,.28);box-shadow:0 0 18px rgba(255,215,64,.06)}
+.listing.sold-listing{opacity:.6}
+.sold-overlay{position:absolute;top:8px;left:8px;background:var(--rd);color:#fff;font-size:11pxpx;font-weight:800;padding:3px 9px;border-radius:6px;z-index:3;letter-spacing:.5px}
+.lst-inner{display:flex}
+.lst-img{width:108px;background:var(--card3);display:flex;align-items:center;justify-content:center;flex-shrink:0;min-height:108px;position:relative;overflow:hidden}
+.lst-img svg{width:40px;height:40px;fill:none;stroke:var(--txt4);stroke-width:1.4;stroke-linecap:round}
+.lst-bdg{position:absolute;top:5px;left:5px;border-radius:5px;padding:2px 7px;font-size:11pxpx;font-weight:800;color:#fff;z-index:1}
+.lst-body{flex:1;padding:10px 11px 9px 9px;min-width:0}
+.lst-title{color:var(--txt);font-weight:600;font-size:13pxpx;line-height:1.4;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lst-price{color:var(--txt);font-weight:900;font-size:17pxpx;letter-spacing:-.3px;line-height:1.2}
+.lst-orig{color:var(--txt4);font-size:11pxpx;text-decoration:line-through;margin-left:4px}
+.lst-off{color:var(--gr);font-size:11pxpx;font-weight:700;margin-left:3px}
+.lst-loc{color:var(--txt3);font-size:11pxpx;margin-top:3px;line-height:1.3}
+.tags-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.upi-t{background:rgba(0,224,144,.08);border:1px solid rgba(0,224,144,.2);border-radius:4px;padding:2px 7px;font-size:11pxpx;color:var(--gr);font-weight:700}
+.nego-t{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.2);border-radius:4px;padding:2px 7px;font-size:11pxpx;color:var(--or2);font-weight:700}
+.vid-t{background:rgba(61,127,255,.1);border:1px solid rgba(61,127,255,.25);border-radius:4px;padding:2px 7px;font-size:11pxpx;color:var(--bl);font-weight:700}
+.lst-foot{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
+.fav-btn{background:none;font-size:18pxpx;padding:0;line-height:1;transition:transform .15s;flex-shrink:0}
+.fav-btn:active{transform:scale(1.4)}
+
+/* QUICK STATS */
+.qstats{display:flex;gap:7px;padding:10px 14px 2px;overflow-x:auto}
+.qstat{flex-shrink:0;background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:9px 13px;display:flex;align-items:center;gap:8px;min-width:110px}
+.qstat-v{font-size:13pxpx;font-weight:900}.qstat-l{font-size:11pxpx;color:var(--txt4);margin-top:1px}
+
+/* RECENTLY VIEWED */
+.rv-scroll{display:flex;gap:8px;overflow-x:auto;padding:4px 14px 10px}
+.rv-card{flex-shrink:0;width:110px;background:var(--card);border:1px solid var(--bdr);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .15s}
+.rv-card:active{transform:scale(.95)}
+.rv-img{height:70px;background:var(--card3);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.rv-img svg{width:28px;height:28px;fill:none;stroke:var(--txt4);stroke-width:1.5;stroke-linecap:round}
+.rv-info{padding:5px 7px 7px}
+
+/* BNAV */
+.bnav{flex-shrink:0;background:var(--bg2);border-top:1px solid var(--bdr);display:flex;align-items:center;padding:5px 0 max(9px,env(safe-area-inset-bottom));z-index:40}
+.nbtn{flex:1;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0;position:relative}
+.ni{width:24px;height:24px;transition:transform .2s}
+.ni svg{width:22px;height:22px;fill:none;stroke:var(--txt4);stroke-width:1.8;stroke-linecap:round;transition:stroke .2s}
+.nbtn.on .ni{transform:scale(1.12)}
+.nbtn.on .ni svg{stroke:var(--or2)}
+.nlbl{font-size:11pxpx;color:var(--txt4);font-weight:600;transition:color .2s}
+.nbtn.on .nlbl{color:var(--or2)}
+.nsell{background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;margin-top:-16px;animation:sellGlow 2.5s ease-in-out infinite}
+.nsell svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round}
+.n-badge{position:absolute;top:-1px;right:calc(50% - 17px);background:var(--rd);border-radius:9px;min-width:15px;height:15px;display:flex;align-items:center;justify-content:center;font-size:11pxpx;color:#fff;font-weight:800;padding:0 3px;border:2px solid var(--bg2)}
+
+/* SHARED */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px)}
+.overlay.open{display:flex}
+.sheet{background:var(--bg2);border-radius:24px 24px 0 0;border:1px solid var(--bdr);padding:18px;width:100%;max-width:430px;max-height:94vh;overflow-y:auto;animation:slideUp .28s cubic-bezier(.34,1.2,.64,1)}
+.sh-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.sh-ttl{font-weight:800;font-size:15pxpx;letter-spacing:-.2px}
+.sh-cls{background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:4px 10px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif}
+.inp{width:100%;background:var(--card2);border:1.5px solid var(--bdr);border-radius:11px;padding:11px 13px;font-size:13pxpx;transition:all .2s}
+.inp:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(255,107,26,.1)}
+.inp::placeholder{color:var(--txt4)}
+.lbl{display:block;color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px}
+.fld{margin-bottom:12px}
+.btn-p{background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;font-weight:800;font-size:13pxpx;width:100%;padding:13px;border-radius:13px;box-shadow:0 5px 20px rgba(255,107,26,.33);font-family:'Baloo 2',sans-serif;position:relative;overflow:hidden}
+.btn-p::before{content:'';position:absolute;top:-50%;left:-60%;width:50%;height:200%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:skewX(-20deg);animation:btnShine 3s ease-in-out infinite}
+.btn-p:active{transform:scale(.97)}
+.btn-g{background:transparent;color:var(--txt3);font-weight:600;font-size:12pxpx;width:100%;padding:11px;border-radius:13px;border:1.5px solid var(--bdr);font-family:'Baloo 2',sans-serif}
+.tog{position:relative;display:inline-block;width:42px;height:23px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tog-sl{position:absolute;cursor:pointer;inset:0;background:var(--card3);border-radius:12px;transition:.3s}
+.tog-sl::before{content:'';position:absolute;width:17px;height:17px;background:#fff;border-radius:50%;left:3px;top:3px;transition:.3s}
+.tog input:checked+.tog-sl{background:var(--gr)}
+.tog input:checked+.tog-sl::before{transform:translateX(19px)}
+.tog-row{background:var(--card2);border:1px solid var(--bdr);border-radius:11px;padding:11px 12px;display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.divider-or{display:flex;align-items:center;gap:10px;color:var(--txt4);font-size:11pxpx;margin:14px 0}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* POST AD */
+.pcat-grid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.pcat{background:var(--card2);border:1.5px solid var(--bdr);border-radius:9px;padding:5px 10px;color:var(--txt3);font-size:11pxpx;font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all .15s;display:flex;align-items:center;gap:4px}
+.pcat svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;flex-shrink:0}
+.pcat.on{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.cond-row{display:flex;gap:6px;margin-bottom:12px}
+.cond-b{flex:1;background:var(--card2);border:1.5px solid var(--bdr);border-radius:9px;padding:8px;color:var(--txt3);font-size:11pxpx;font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif;text-align:center;transition:all .15s}
+.cond-b.on{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.mzone{border:2px dashed var(--bdr2);border-radius:13px;padding:16px;text-align:center;cursor:pointer;margin-bottom:12px;transition:all .2s;background:var(--card2)}
+.mzone:active{border-color:var(--or)}
+.mtabs{display:flex;gap:7px;margin-bottom:11px}
+.mtab{flex:1;background:var(--card2);border:1.5px solid var(--bdr);border-radius:9px;padding:9px;color:var(--txt3);font-size:11pxpx;font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif;text-align:center;transition:all .15s}
+.mtab.on{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:var(--or3)}
+.promo-opt{background:linear-gradient(135deg,rgba(255,215,64,.07),rgba(255,107,26,.04));border:1px solid rgba(255,215,64,.18);border-radius:11px;padding:11px 12px;display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ps-wrap{text-align:center;padding:36px 16px}
+.ps-ico{font-size:64pxpx;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);display:block;margin-bottom:10px}
+
+/* DETAIL */
+.dtl-media{background:var(--card3);border-radius:15px;min-height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;overflow:hidden;position:relative}
+.dtl-media svg{width:64px;height:64px;fill:none;stroke:var(--txt4);stroke-width:1.2;stroke-linecap:round}
+.dtl-thumbs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.dtl-thumb{width:54px;height:54px;border-radius:9px;background:var(--card3);border:2px solid var(--bdr);overflow:hidden;flex-shrink:0;cursor:pointer;transition:border-color .15s;position:relative}
+.dtl-thumb.on{border-color:var(--or)}
+.dtl-thumb img,.dtl-thumb video{width:100%;height:100%;object-fit:cover}
+.sc{background:var(--card2);border:1px solid var(--bdr);border-radius:13px;padding:12px;margin-bottom:11px}
+.nego-box{background:var(--card2);border:1px solid rgba(255,107,26,.25);border-radius:13px;padding:12px;margin-bottom:11px}
+.nego-inp-row{display:flex;gap:7px;margin-top:8px}
+.nego-inp{flex:1;background:var(--card3);border:1.5px solid var(--bdr);border-radius:9px;padding:9px 11px;font-size:13pxpx;font-family:'Baloo 2',sans-serif;font-weight:800}
+.nego-inp:focus{border-color:var(--or)}
+.nego-send{background:linear-gradient(135deg,var(--or),#e8621a);border-radius:9px;padding:9px 14px;color:#fff;font-weight:700;font-size:11pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer}
+.rv-card2{background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:11px;margin-bottom:7px}
+.dtl-btns{display:flex;gap:7px;margin-bottom:7px}
+.btn-chat-d{flex:1;background:var(--card2);border:1.5px solid var(--bdr);border-radius:12px;padding:12px;color:var(--txt);font-weight:700;font-size:12pxpx;font-family:'Baloo 2',sans-serif}
+.btn-call-d{flex:1;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:12px;padding:12px;color:#fff;font-weight:700;font-size:12pxpx;font-family:'Baloo 2',sans-serif;box-shadow:0 4px 14px rgba(255,107,26,.3)}
+.btn-wa{width:100%;background:#128C7E;border-radius:12px;padding:12px;color:#fff;font-weight:700;font-size:12pxpx;font-family:'Baloo 2',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px;cursor:pointer}
+/* Rating stars */
+.star-row{display:flex;gap:4px}
+.star{font-size:22pxpx;cursor:pointer;transition:transform .15s;filter:grayscale(1);opacity:.4}
+.star.on,.star:hover{filter:none;opacity:1;transform:scale(1.15)}
+.star-label{color:var(--txt3);font-size:12pxpx;margin-top:5px;text-align:center}
+
+/* CHAT */
+.chat-item{background:var(--card);border:1px solid var(--bdr);border-radius:13px;padding:12px;margin-bottom:7px;display:flex;gap:11px;cursor:pointer;align-items:center;transition:all .15s;animation:fadeUp .3s ease backwards}
+.chat-item:active{background:var(--card2)}
+.ch-av{width:44px;height:44px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18pxpx;font-weight:800;color:#fff;position:relative}
+.ch-on{position:absolute;bottom:1px;right:1px;width:10px;height:10px;background:var(--gr);border-radius:50%;border:2px solid var(--card)}
+.ch-name{color:var(--txt);font-weight:700;font-size:12pxpx}
+.ch-prev{color:var(--txt3);font-size:11pxpx;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+.ch-time{color:var(--txt4);font-size:11pxpx}
+.ch-unrd{background:var(--or);border-radius:9px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11pxpx;font-weight:800;padding:0 4px}
+.chat-detail{display:none;flex-direction:column;position:absolute;inset:0;background:var(--bg);z-index:100}
+.chat-detail.open{display:flex;animation:fadeIn .15s ease}
+.cd-hdr{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:11px 13px;display:flex;align-items:center;gap:9px;flex-shrink:0}
+.cd-back{background:none;font-size:21pxpx;color:var(--txt3);padding:0}
+.cd-av{width:36px;height:36px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13pxpx;flex-shrink:0;color:#fff;font-weight:800}
+.istrip{background:var(--card2);border-bottom:1px solid var(--bdr);padding:8px 13px;display:flex;gap:9px;align-items:center;cursor:pointer;flex-shrink:0}
+.cd-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:7px}
+.mbub{max-width:78%;padding:9px 13px;font-size:12pxpx;line-height:1.55;word-break:break-word;border-radius:15px}
+.mme{background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.mthm{background:var(--card2);color:var(--txt);align-self:flex-start;border-bottom-left-radius:4px}
+.mt{font-size:11pxpx;color:var(--txt4);padding:1px 4px;display:flex;align-items:center;gap:3px}
+.mt.r{justify-content:flex-end}
+.read-tick{color:var(--bl);font-size:11pxpx}
+.ngbub{background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.3);border-radius:13px;padding:11px 13px;max-width:82%;align-self:flex-end}
+.nb-acts{display:flex;gap:6px;margin-top:7px}
+.nb-acc{background:var(--gr);border-radius:7px;padding:5px 12px;color:#000;font-size:11pxpx;font-weight:800;font-family:'Baloo 2',sans-serif;cursor:pointer}
+.nb-rej{background:var(--card3);border-radius:7px;padding:5px 12px;color:var(--txt3);font-size:11pxpx;font-weight:700;font-family:'Baloo 2',sans-serif;cursor:pointer}
+.cd-bar{background:var(--bg2);border-top:1px solid var(--bdr);padding:9px 11px;display:flex;gap:7px;align-items:center;flex-shrink:0}
+.cd-inp{flex:1;background:var(--card2);border:1.5px solid var(--bdr);border-radius:21px;padding:9px 14px;font-size:13pxpx;font-family:'Baloo 2',sans-serif;transition:border-color .2s}
+.cd-inp:focus{border-color:var(--or)}
+.cd-send{background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;box-shadow:0 0 10px rgba(255,107,26,.4)}
+.cd-send svg{width:15px;height:15px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}
+.ty-wrap{display:flex;gap:4px;align-items:center;padding:9px 13px;background:var(--card2);border-radius:15px;border-bottom-left-radius:4px;align-self:flex-start;width:fit-content}
+.ty-d{width:6px;height:6px;border-radius:50%;background:var(--txt3);animation:typingDot 1s ease-in-out infinite}
+.ty-d:nth-child(2){animation-delay:.2s}.ty-d:nth-child(3){animation-delay:.4s}
+/* Chat image preview */
+.chat-img-preview{max-width:200px;border-radius:10px;overflow:hidden;cursor:pointer;margin-top:4px}
+.chat-img-preview img{width:100%;display:block}
+
+/* PROFILE */
+.prof-hero{background:linear-gradient(135deg,rgba(255,107,26,.11),rgba(61,127,255,.05));border:1px solid rgba(255,107,26,.14);border-radius:18px;padding:18px;margin-bottom:13px;text-align:center}
+.prof-stats{display:flex;margin-top:13px;border-top:1px solid var(--bdr);padding-top:13px}
+.pstat{flex:1;text-align:center;border-right:1px solid var(--bdr)}
+.pstat:last-child{border:none}
+.psv{color:var(--txt);font-weight:900;font-size:17pxpx}
+.psl{color:var(--txt4);font-size:11pxpx;margin-top:1px}
+.menu-sec{color:var(--txt4);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin:13px 0 7px 2px;display:block}
+.mitem{background:var(--card);border:1px solid var(--bdr);border-radius:11px;padding:12px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .15s}
+.mitem:active{background:var(--card2)}
+.mil{display:flex;align-items:center;gap:9px;color:var(--txt2);font-size:12pxpx;font-weight:500}
+.mil svg{width:17px;height:17px;fill:none;stroke:var(--txt3);stroke-width:1.8;stroke-linecap:round}
+.mbdg{background:var(--or);border-radius:7px;padding:2px 8px;font-size:11pxpx;color:#fff;font-weight:700}
+.upi-panel{background:rgba(0,224,144,.05);border:1px solid rgba(0,224,144,.12);border-radius:15px;padding:12px;margin-bottom:12px}
+.upi-meths{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.upi-m{background:var(--card2);border:1px solid var(--bdr2);border-radius:8px;padding:3px 10px;font-size:11pxpx;color:var(--txt3);font-weight:500}
+.logout-btn{width:100%;background:rgba(255,68,102,.07);border:1px solid rgba(255,68,102,.2);border-radius:11px;padding:12px;color:var(--rd);font-weight:700;font-size:12pxpx;margin-top:5px;font-family:'Baloo 2',sans-serif}
+/* Profile avatar upload */
+.prof-av-wrap{position:relative;display:inline-block;margin-bottom:10px}
+.prof-av-edit{position:absolute;bottom:-2px;right:-2px;width:24px;height:24px;background:var(--or);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12pxpx;cursor:pointer;border:2px solid var(--bg2)}
+/* My Listings tab in profile */
+.my-lst-item{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:11px;margin-bottom:7px;display:flex;gap:10px;align-items:center}
+.my-lst-thumb{width:52px;height:52px;border-radius:9px;background:var(--card3);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.my-lst-thumb svg{width:22px;height:22px;fill:none;stroke:var(--txt4);stroke-width:1.8;stroke-linecap:round}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.live{background:var(--gr);box-shadow:0 0 6px var(--gr)}
+.status-dot.sold{background:var(--rd)}
+.action-row{display:flex;gap:5px;margin-top:6px}
+.act-btn{background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:4px 9px;font-size:11pxpx;font-weight:600;font-family:'Baloo 2',sans-serif;cursor:pointer;color:var(--txt3);transition:all .15s}
+.act-btn:active{background:var(--card2)}
+.act-btn.sold-btn{color:var(--rd);border-color:rgba(255,68,102,.3);background:rgba(255,68,102,.07)}
+.act-btn.edit-btn{color:var(--or2);border-color:rgba(255,107,26,.3);background:rgba(255,107,26,.07)}
+
+/* NOTIF PANEL */
+.np{position:fixed;top:0;right:-100%;width:100%;max-width:430px;height:100%;background:var(--bg2);z-index:300;transition:right .3s ease;display:flex;flex-direction:column;border-left:1px solid var(--bdr)}
+.np.open{right:0}
+.np-hdr{padding:13px 15px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.np-list{overflow-y:auto;flex:1}
+.nitem{padding:13px 15px;border-bottom:1px solid var(--bdr);display:flex;gap:11px;cursor:pointer;transition:background .15s}
+.nitem.unread{background:rgba(255,107,26,.04)}
+.nitem-ico{width:38px;height:38px;border-radius:11px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:17pxpx;flex-shrink:0;border:1px solid var(--bdr)}
+.n-dot{width:7px;height:7px;background:var(--or);border-radius:50%;flex-shrink:0;margin-top:6px}
+
+/* MAP */
+.map-ov{position:fixed;inset:0;z-index:250;background:var(--bg);display:none;flex-direction:column;max-width:430px;left:50%;transform:translateX(-50%)}
+
+/* UPI PAYMENT MODAL */
+.upi-flow{text-align:center;padding:10px 0}
+.upi-amount{font-size:36pxpx;font-weight:900;color:var(--txt);letter-spacing:-.5px;margin:10px 0}
+.upi-apps{display:flex;gap:12px;justify-content:center;margin:16px 0}
+.upi-app{width:60px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+.upi-app-ico{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24pxpx;border:1.5px solid var(--bdr);background:var(--card2);transition:all .15s}
+.upi-app:active .upi-app-ico{transform:scale(.9)}
+.upi-app span{font-size:11pxpx;color:var(--txt3);font-weight:600}
+.upi-id-inp{width:100%;text-align:center;background:var(--card3);border:1.5px solid var(--bdr);border-radius:12px;padding:12px;font-size:13pxpx;font-weight:700;margin:12px 0}
+.upi-id-inp:focus{border-color:var(--gr)}
+.pay-success{animation:popIn .5s ease;display:none;text-align:center;padding:20px 0}
+
+/* PWA INSTALL BANNER */
+.pwa-banner{background:linear-gradient(135deg,rgba(255,107,26,.15),rgba(61,127,255,.08));border:1px solid rgba(255,107,26,.25);border-radius:14px;padding:12px 14px;margin:10px 14px 0;display:flex;align-items:center;gap:10px;animation:fadeUp .3s ease}
+.pwa-banner-ico{font-size:28pxpx}
+.pwa-install-btn{background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;font-size:11pxpx;font-weight:700;padding:7px 14px;border-radius:9px;font-family:'Baloo 2',sans-serif;white-space:nowrap}
+.pwa-close-btn{background:none;color:var(--txt4);font-size:15pxpx;padding:0;margin-left:auto;flex-shrink:0}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--card2);border:1px solid var(--bdr2);border-radius:13px;padding:9px 18px;font-size:12pxpx;font-weight:500;z-index:600;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.6);transition:all .24s;max-width:88vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* CONFIRM DIALOG */
+.confirm-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.confirm-ov.open{display:flex}
+.confirm-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:20px;padding:24px 20px;width:85%;max-width:340px;text-align:center;animation:popIn .3s ease}
+.confirm-ico{font-size:42pxpx;margin-bottom:10px}
+.confirm-h{font-size:15pxpx;font-weight:800;margin-bottom:6px}
+.confirm-s{color:var(--txt3);font-size:13pxpx;line-height:1.6;margin-bottom:18px}
+.confirm-btns{display:flex;gap:9px}
+.cb-cancel{flex:1;background:var(--card2);border:1.5px solid var(--bdr);border-radius:12px;padding:12px;color:var(--txt3);font-weight:700;font-size:13pxpx;font-family:'Baloo 2',sans-serif}
+.cb-ok{flex:1;border-radius:12px;padding:12px;color:#fff;font-weight:800;font-size:13pxpx;font-family:'Baloo 2',sans-serif}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:50px 20px}
+.empty-ico{font-size:52pxpx;margin-bottom:12px}
+.empty-h{color:var(--txt);font-weight:700;font-size:13pxpx;margin-bottom:5px}
+.empty-s{color:var(--txt4);font-size:12pxpx;line-height:1.65}
+
+/* NEGO MODAL */
+.nsugg-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.nsugg{background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:6px 11px;color:var(--txt2);font-size:11pxpx;font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif;transition:all .15s}
+.nsugg:active{background:rgba(255,107,26,.14);border-color:rgba(255,107,26,.4);color:var(--or2)}
+
+/* SAVED ROW */
+.sv-row{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:11px;margin-bottom:7px;display:flex;gap:10px;align-items:center;cursor:pointer;transition:all .15s}
+.sv-row:active{background:var(--card2)}
+.sv-thumb{width:48px;height:48px;background:var(--card3);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.sv-thumb svg{width:22px;height:22px;fill:none;stroke:var(--txt4);stroke-width:1.8;stroke-linecap:round}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOADING -->
+<div id="pg-loading" class="page active">
+  <div class="lr-wrap"><div class="lr lr1"></div><div class="lr lr2"></div><div class="lr lr3"></div>
+    <div class="ll"><svg viewBox="0 0 36 36" style="width:36px;height:36px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 6h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 001.94-1.53L28 10H10"/><circle cx="10.5" cy="25.5" r="1.5" fill="#fff" stroke="none"/><circle cx="24.5" cy="25.5" r="1.5" fill="#fff" stroke="none"/></svg></div>
+  </div>
+  <div class="lb">Apna Bazar</div><div class="lt">India Ka Local Marketplace 🇮🇳</div>
+  <div class="lbw"><div class="lba"></div></div>
+  <div class="ld-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+</div>
+
+<!-- LOGIN -->
+<div id="pg-login" class="page"><div style="overflow-y:auto;flex:1">
+  <div class="lo-top">
+    <div class="lo-logo"><svg viewBox="0 0 36 36" style="width:32px;height:32px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M6 6h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 001.94-1.53L28 10H10"/><circle cx="10.5" cy="25.5" r="1.5" fill="#fff" stroke="none"/><circle cx="24.5" cy="25.5" r="1.5" fill="#fff" stroke="none"/></svg></div>
+    <div class="lo-brand">Apna Bazar</div><div class="lo-sub" id="lo-sub-txt">India Ka Bharosemand Marketplace 🇮🇳</div>
+  </div>
+  <div style="padding:0 24px">
+    <div style="color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;text-align:center;margin-bottom:9px" id="role-hdr-txt">APNI BHUMIKA CHUNEIN</div>
+    <div class="role-row">
+      <div class="role-card sel" id="role-buyer" onclick="pickRole('buyer')"><div class="role-chk">✓</div><div style="font-size:34pxpx;margin-bottom:5px">🧑</div><div style="font-weight:700;font-size:13pxpx" id="role-buyer-lbl">Buyer</div><div style="color:var(--txt3);font-size:11pxpx;margin-top:2px" id="role-buyer-sub">Khareedna chahta hoon</div></div>
+      <div class="role-card" id="role-seller" onclick="pickRole('seller')"><div class="role-chk">✓</div><div style="font-size:34pxpx;margin-bottom:5px">👷</div><div style="font-weight:700;font-size:13pxpx" id="role-seller-lbl">Seller</div><div style="color:var(--txt3);font-size:11pxpx;margin-top:2px" id="role-seller-sub">Bechna chahta hoon</div></div>
+    </div>
+  </div>
+  <!-- LOGIN FORM -->
+  <div id="login-step1" class="lo-form">
+    <label class="lf-lbl" id="lf-phone-lbl">📱 Mobile Number</label>
+    <input id="l-phone" class="lf-inp" type="tel" maxlength="10" placeholder="9876543210" oninput="this.value=this.value.replace(/\D/g,'')"/>
+    <label class="lf-lbl" id="lf-name-lbl">🧑 Apna Naam</label>
+    <input id="l-name" class="lf-inp" type="text" placeholder="Ramesh Kumar"/>
+    <label class="lf-lbl" id="lf-city-lbl">📍 Shehar / Gaon</label>
+    <input id="l-city" class="lf-inp" type="text" placeholder="Jaipur, Rajasthan"/>
+    <button class="btn-start" id="otp-send-btn" onclick="sendOTP()">📱 OTP Bhejo &amp; Shuru Karo</button>
+    <div style="text-align:center;color:var(--bl);font-size:12pxpx;font-weight:600;padding:8px;cursor:pointer" onclick="openLangModal()">🌐 Bhasha Badlen / Change Language &nbsp;<span id="lang-display-login" style="background:rgba(61,127,255,.15);border-radius:6px;padding:2px 8px">हिंदी</span></div>
+    <div style="text-align:center;background:var(--card2);border-radius:9px;padding:8px;color:var(--txt4);font-size:11pxpx;margin-top:8px">Demo: koi bhi number + naam daalo, OTP: <b style="color:var(--or2)">1234</b></div>
+  </div>
+  <!-- OTP STEP -->
+  <div id="login-step2" class="lo-form" style="display:none">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="font-size:40pxpx;margin-bottom:8px">📱</div>
+      <div style="font-weight:800;font-size:18pxpx;margin-bottom:4px">OTP Verify Karo</div>
+      <div style="color:var(--txt3);font-size:13pxpx">+91 <span id="otp-phone-show" style="color:var(--txt);font-weight:700"></span> par OTP bheja gaya</div>
+    </div>
+    <div class="otp-row">
+      <input class="otp-b" maxlength="1" type="tel" oninput="otpNext(this,0)" id="otp0"/>
+      <input class="otp-b" maxlength="1" type="tel" oninput="otpNext(this,1)" id="otp1"/>
+      <input class="otp-b" maxlength="1" type="tel" oninput="otpNext(this,2)" id="otp2"/>
+      <input class="otp-b" maxlength="1" type="tel" oninput="otpNext(this,3)" id="otp3"/>
+    </div>
+    <button class="btn-start" id="otp-verify-btn" onclick="verifyOTP()">✅ Verify Karo &amp; Login</button>
+    <div class="otp-resend">OTP nahi aaya? <span id="otp-resend-btn" onclick="resendOTP()">Dobara Bhejo</span> <span id="otp-timer"></span></div>
+    <div style="text-align:center;margin-top:10px"><span onclick="goBackToLogin()" style="color:var(--txt3);font-size:12pxpx;cursor:pointer">← Wapas Jao</span></div>
+  </div>
+</div></div>
+
+<!-- MAIN APP -->
+<div id="pg-main" class="page" style="overflow:hidden">
+  <div class="hdr">
+    <div class="hdr-r1">
+      <div>
+        <div class="hdr-brand" id="hdr-brand-txt" onclick="switchTab('home')">Apna Bazar 🛍️</div>
+        <div style="color:var(--txt3);font-size:11pxpx;margin-top:1px;cursor:pointer;transition:color .3s" onclick="detectLocation()" id="loc-txt">📍 Location detect karo →</div>
+      </div>
+      <div class="hdr-acts">
+        <button class="hbtn" onclick="openMap()"><svg viewBox="0 0 24 24"><polygon points="3,6 9,3 15,6 21,3 21,18 15,21 9,18 3,21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg></button>
+        <button class="hbtn" onclick="openNotifs()" style="position:relative"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span class="hbtn-dot" id="notif-dot" style="display:none"></span></button>
+        <button class="hbtn" style="background:linear-gradient(135deg,#ff6b1a,#ff3d00);border:none" onclick="switchTab('profile')"><svg viewBox="0 0 24 24" style="stroke:#fff"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+      </div>
+    </div>
+    <div class="srch-area" style="margin-top:8px">
+      <div class="srch-box" style="position:relative">
+        <svg class="si" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="srch" class="srch-inp" placeholder="Category, item ya shehar..." oninput="onSearch()" onfocus="showSuggestions()" onblur="setTimeout(hideSugg,200)"/>
+        <button class="mic-btn" onclick="startVoice()"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M19 10a7 7 0 01-14 0M12 19v4M8 23h8"/></svg></button>
+        <div id="srch-sugg" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;z-index:200;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+      </div>
+      <button class="filter-fab" id="filter-fab" onclick="openSFP()">
+        <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+        Filter<span class="f-cnt" id="filter-count" style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="afbar" id="afbar" style="display:none"></div>
+  <div class="tkr"><div class="tkri" id="ticker"></div></div>
+  <div class="content">
+    <!-- HOME TAB -->
+    <div id="tab-home" class="tp active">
+      <div id="pwa-banner-wrap"></div>
+      <div class="hero">
+        <div class="hero-glow"></div>
+        <div style="font-size:15pxpx;font-weight:800;letter-spacing:-.3px;line-height:1.3;position:relative">India Ka Local Marketplace 🇮🇳</div>
+        <div style="color:var(--txt3);font-size:11pxpx;margin:3px 0 11px;position:relative">Becho · Kharido · Negotiate karo — bilkul muft</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;position:relative">
+          <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:3px 10px;font-size:11pxpx;color:var(--txt2);font-weight:500">⚡ Free Listing</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:3px 10px;font-size:11pxpx;color:var(--txt2);font-weight:500">🔒 Safe Chat</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:3px 10px;font-size:11pxpx;color:var(--txt2);font-weight:500">💳 UPI Pay</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:3px 10px;font-size:11pxpx;color:var(--txt2);font-weight:500">🎬 Video</span>
+        </div>
+      </div>
+      <div class="qstats" id="qstats"></div>
+      <div class="sec-hdr"><span class="sec-ttl">Categories</span></div>
+      <div class="hcats" id="cat-bar"></div>
+      <div id="rv-section" style="display:none">
+        <div class="sec-hdr"><span class="sec-ttl">⏱️ Recently Viewed</span></div>
+        <div class="rv-scroll" id="rv-list"></div>
+      </div>
+      <div style="padding:2px 14px 0">
+        <div class="lst-toolbar"><span class="lst-count" id="lst-count"></span><button style="background:var(--card2);border:1px solid var(--bdr);border-radius:7px;padding:4px 11px;color:var(--txt3);font-size:11pxpx;font-weight:600;font-family:'Baloo 2',sans-serif" onclick="toggleSort()">⇅ Sort</button></div>
+        <div id="listings-wrap"></div>
+        <div id="load-more-wrap" style="text-align:center;padding:12px 0;display:none">
+          <button onclick="loadMore()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:10px;padding:9px 22px;color:var(--txt3);font-size:12pxpx;font-weight:600;font-family:'Baloo 2',sans-serif">Aur Dekho ↓</button>
+        </div>
+      </div>
+    </div>
+    <!-- SAVED TAB -->
+    <div id="tab-saved" class="tp" style="padding:14px">
+      <div style="font-weight:800;font-size:18pxpx;letter-spacing:-.3px;margin-bottom:13px">❤️ Saved Items</div>
+      <div id="saved-list"></div>
+    </div>
+    <!-- CHAT TAB -->
+    <div id="tab-chat" class="tp" style="padding:14px">
+      <div style="font-weight:800;font-size:18pxpx;letter-spacing:-.3px;margin-bottom:3px">💬 Messages</div>
+      <div style="color:var(--txt3);font-size:11pxpx;margin-bottom:13px">Buyers aur sellers se seedha baat karo</div>
+      <div id="chat-list"></div>
+    </div>
+    <!-- PROFILE TAB -->
+    <div id="tab-profile" class="tp" style="padding:14px">
+      <div class="prof-hero">
+        <div class="prof-av-wrap">
+          <div id="prof-av-ico" style="width:64px;height:64px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28pxpx;color:#fff;font-weight:800;box-shadow:0 0 20px rgba(255,107,26,.4);overflow:hidden">R</div>
+          <div class="prof-av-edit" onclick="document.getElementById('prof-photo-inp').click()">📷</div>
+          <input type="file" id="prof-photo-inp" accept="image/*" style="display:none" onchange="updateProfilePhoto(this)"/>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:2px">
+          <div style="font-weight:900;font-size:19pxpx;letter-spacing:-.3px" id="p-name">—</div>
+          <div id="p-verified-badge" style="display:none;background:rgba(0,224,144,.1);border:1px solid rgba(0,224,144,.25);border-radius:6px;padding:2px 7px;color:var(--gr);font-size:11pxpx;font-weight:700">✅ Verified</div>
+        </div>
+        <div style="color:var(--or3);font-size:12pxpx;margin-top:2px" id="p-ph">—</div>
+        <div style="color:var(--txt4);font-size:11pxpx;margin-top:2px" id="p-loc">—</div>
+        <div style="color:var(--txt3);font-size:11pxpx;margin-top:2px" id="p-role-tag"></div>
+        <div class="prof-stats">
+          <div class="pstat"><div class="psv" id="ps-ads">0</div><div class="psl">Listings</div></div>
+          <div class="pstat"><div class="psv" id="ps-sold">0</div><div class="psl">Sold</div></div>
+          <div class="pstat"><div class="psv" id="ps-rating">—</div><div class="psl">Rating</div></div>
+          <div class="pstat"><div class="psv" id="ps-saved">0</div><div class="psl">Saved</div></div>
+        </div>
+        <button onclick="openEditProfile()" id="menu-editprof" style="margin-top:11px;background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.25);border-radius:9px;padding:7px 18px;color:var(--or2);font-size:12pxpx;font-weight:700;font-family:var(--font)">✏️ Profile Edit Karo</button>
+      </div>
+      <div class="upi-panel">
+        <div style="color:var(--gr);font-weight:700;font-size:13pxpx">💳 UPI Payment</div>
+        <div style="color:var(--txt4);font-size:11pxpx;margin-top:2px">Buyers directly pay karein</div>
+        <div class="upi-meths"><div class="upi-m">🟢 GPay</div><div class="upi-m">🟣 PhonePe</div><div class="upi-m">🔵 Paytm</div><div class="upi-m">🇮🇳 BHIM</div></div>
+      </div>
+      <span class="menu-sec">Mera Account</span>
+      <div class="mitem" onclick="showMyListings()"><span class="mil"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span id="menu-mylistings">Mere Listings</span></span><span class="mbdg" id="my-ads-b">0</span></div>
+      <div class="mitem" onclick="switchTab('saved')"><span class="mil"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span id="menu-saved">Saved Items</span></span><span style="color:var(--txt4);font-size:13pxpx">›</span></div>
+      <div class="mitem" onclick="switchTab('chat')"><span class="mil"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span id="menu-messages">Messages</span></span><span class="mbdg" id="chat-cnt-p">0</span></div>
+      <div class="mitem" onclick="openTransactions()"><span class="mil"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span id="menu-txn">Transaction History</span></span><span style="color:var(--txt4);font-size:13pxpx">›</span></div>
+      <div class="mitem" onclick="openUPISettings()"><span class="mil"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span id="menu-upi">UPI ID Set Karo</span></span><span id="upi-id-display" style="color:var(--gr);font-size:11pxpx;font-weight:600"></span></div>
+      <span class="menu-sec">Tools & Settings</span>
+      <div class="mitem" onclick="openLangModal()"><span class="mil"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg><span id="menu-lang">Bhasha / Language</span></span><span id="lang-display" style="color:var(--or2);font-size:11pxpx;font-weight:700">हिंदी</span></div>
+      <div class="mitem" onclick="detectLocation()"><span class="mil"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span id="menu-location">Location Update</span></span><span style="color:var(--txt4);font-size:13pxpx">›</span></div>
+      <div class="mitem" onclick="openNotifs()"><span class="mil"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg><span id="menu-notifs">Notifications</span></span><span class="mbdg" id="notif-count-p">0</span></div>
+      <div class="mitem" onclick="openSFP()"><span class="mil"><svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg><span id="menu-filters">Search Filters</span></span><span style="color:var(--txt4);font-size:13pxpx">›</span></div>
+      <div class="mitem" onclick="openPWAInstall()"><span class="mil"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="menu-install">App Install Karo</span></span><span style="background:var(--gr);border-radius:5px;padding:2px 7px;font-size:11pxpx;color:#000;font-weight:700">PWA</span></div>
+      <div class="mitem"><span class="mil"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span id="menu-privacy">Privacy & Safety</span></span><span style="color:var(--txt4);font-size:13pxpx">›</span></div>
+      <div class="mitem" onclick="clearAllData()"><span class="mil"><svg viewBox="0 0 24 24"><polyline points="3,6 5,6 21,6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg><span id="menu-clear">Sab Data Clear Karo</span></span><span style="color:var(--rd);font-size:12pxpx">⚠️</span></div>
+      <button class="logout-btn" onclick="doLogout()"><span id="logout-btn-txt">🚪 Logout</span></button>
+      <div style="height:12px"></div>
+    </div>
+  </div>
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <button class="nbtn on" id="nb-home" onclick="switchTab('home')"><div class="ni"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg></div><div class="nlbl" id="nb-lbl-home">Ghar</div></button>
+    <button class="nbtn" id="nb-saved" onclick="switchTab('saved')"><div class="ni"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div><div class="nlbl" id="nb-lbl-saved">Saved</div></button>
+    <button class="nbtn" onclick="openPost()"><div style="display:flex;flex-direction:column;align-items:center;gap:3px"><div class="nsell"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><div class="nlbl" id="nb-lbl-sell" style="color:var(--or2);font-weight:700;margin-top:2px">Becho</div></div></button>
+    <button class="nbtn" id="nb-chat" onclick="switchTab('chat')"><div style="position:relative;display:inline-block"><div class="ni"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><span class="n-badge" id="chat-badge" style="display:none">0</span></div><div class="nlbl" id="nb-lbl-chat">Baat</div></button>
+    <button class="nbtn" id="nb-profile" onclick="switchTab('profile')"><div class="ni"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="nlbl" id="nb-lbl-profile">Mera</div></button>
+  </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="sfp" id="sfp">
+  <div class="sfp-bg" onclick="closeSFP()"></div>
+  <div class="sfp-sheet">
+    <div class="sfp-hdr"><div style="font-weight:800;font-size:15pxpx">🔍 Search &amp; Filter</div><button onclick="closeSFP()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:4px 10px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif">✕ Close</button></div>
+    <div class="sfp-body">
+      <div class="sfp-sec"><div class="sfp-sec-ttl">📦 Category</div><div class="cat-grid" id="sfp-cats"></div></div>
+      <div class="sfp-sec"><div class="sfp-sec-ttl">🔧 Halat</div>
+        <div class="cond-btns">
+          <button class="cond-f on" id="cf-all" onclick="setCF('all',this)">🔥 All</button>
+          <button class="cond-f" id="cf-new" onclick="setCF('new',this)">✨ Naya</button>
+          <button class="cond-f" id="cf-used" onclick="setCF('used',this)">🔧 Purana</button>
+          <button class="cond-f" id="cf-refurb" onclick="setCF('refurb',this)">💎 Refurb</button>
+        </div>
+      </div>
+      <div class="sfp-sec"><div class="sfp-sec-ttl">💰 Price Range (₹)</div>
+        <div class="price-row"><input id="pf-min" class="pi" type="number" placeholder="Min ₹"/><span style="color:var(--txt4);font-size:13pxpx">—</span><input id="pf-max" class="pi" type="number" placeholder="Max ₹"/></div>
+      </div>
+      <div class="sfp-sec"><div class="sfp-sec-ttl">📍 Location</div><input id="pf-loc" class="pi" style="width:100%;border-radius:10px" placeholder="e.g. Mumbai, Delhi, Jaipur..."/></div>
+      <div class="sfp-sec"><div class="sfp-sec-ttl">✨ Special Filters</div>
+        <div class="feat-grid">
+          <div class="feat-t" id="ft-upi" onclick="toggleFT('upi')"><svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span>💳 UPI Accept</span></div>
+          <div class="feat-t" id="ft-nego" onclick="toggleFT('nego')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg><span>🤝 Negotiable</span></div>
+          <div class="feat-t" id="ft-verified" onclick="toggleFT('verified')"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg><span>✅ Verified</span></div>
+          <div class="feat-t" id="ft-video" onclick="toggleFT('video')"><svg viewBox="0 0 24 24"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>🎬 Has Video</span></div>
+          <div class="feat-t" id="ft-featured" onclick="toggleFT('featured')"><svg viewBox="0 0 24 24"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg><span>👑 Featured</span></div>
+          <div class="feat-t" id="ft-discount" onclick="toggleFT('discount')"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="2"/><circle cx="15" cy="15" r="2"/><path d="M17 7L7 17"/></svg><span>🏷️ Discount</span></div>
+          <div class="feat-t" id="ft-avail" onclick="toggleFT('avail')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span>🟢 Available</span></div>
+        </div>
+      </div>
+      <div class="sfp-sec"><div class="sfp-sec-ttl">⇅ Sort By</div>
+        <div class="sort-btns">
+          <button class="sort-b" id="sb-newest" onclick="setSFPSort('newest',this)">🆕 Newest</button>
+          <button class="sort-b on" id="sb-priceh" onclick="setSFPSort('priceh',this)">💰 Price ↓</button>
+          <button class="sort-b" id="sb-pricel" onclick="setSFPSort('pricel',this)">💰 Price ↑</button>
+          <button class="sort-b" id="sb-views" onclick="setSFPSort('views',this)">👁 Views</button>
+        </div>
+      </div>
+    </div>
+    <div class="sfp-actions">
+      <button class="btn-clear" onclick="clearFilters()">🗑️ Clear</button>
+      <button class="btn-apply" onclick="applyFilters()">✅ Apply Filters</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="np" id="notif-panel">
+  <div class="np-hdr"><div style="font-weight:800;font-size:13pxpx">🔔 Notifications</div><div style="display:flex;gap:7px;align-items:center"><span onclick="markAllRead()" style="color:var(--or2);font-size:11pxpx;font-weight:600;cursor:pointer">Sab Read ✓</span><button onclick="closeNotifs()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:7px;padding:4px 10px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif">✕</button></div></div>
+  <div class="np-list" id="notif-list"></div>
+</div>
+
+<!-- MAP -->
+<div class="map-ov" id="map-ov" style="display:none;flex-direction:column">
+  <div style="padding:12px 14px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;background:var(--bg2);flex-shrink:0">
+    <div style="font-weight:700;font-size:13pxpx">🗺️ City Map</div>
+    <button onclick="closeMap()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:7px;padding:4px 10px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif">✕ Close</button>
+  </div>
+  <div style="flex:1;background:linear-gradient(180deg,#0a1520,#071410);position:relative;overflow:hidden">
+    <svg id="india-svg" viewBox="0 0 100 120" style="width:100%;height:100%">
+      <path d="M35,5L45,3L58,6L68,12L72,20L70,28L75,33L78,40L74,46L68,52L72,58L70,65L65,72L58,80L52,88L48,94L44,98L40,95L35,88L30,80L25,70L22,60L20,50L22,40L20,32L22,24L28,16Z" fill="#0e1a2e" stroke="#1a3050" stroke-width=".8"/>
+      <g id="map-dots-g"></g>
+    </svg>
+  </div>
+  <div style="background:var(--bg2);border-top:1px solid var(--bdr);max-height:200px;overflow-y:auto;padding:11px 13px;flex-shrink:0">
+    <div id="map-city-lbl" style="color:var(--txt3);font-size:12pxpx;font-weight:600;margin-bottom:7px">👆 City par tap karo listings dekhne ke liye</div>
+    <div id="map-city-items"></div>
+  </div>
+</div>
+
+<!-- POST AD -->
+<div id="post-modal" class="overlay" onclick="if(event.target===this)closePost()">
+  <div class="sheet">
+    <div id="post-success" style="display:none" class="ps-wrap">
+      <span class="ps-ico">✅</span>
+      <div style="color:var(--gr);font-weight:900;font-size:20pxpx">Ad Live Ho Gayi! 🎉</div>
+      <div style="color:var(--txt3);font-size:13pxpx;margin:5px 0 16px">Buyers ab aapka item dekh sakte hain</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+        <button onclick="shareWA()" style="background:#128C7E;border:none;border-radius:11px;padding:10px 16px;color:#fff;font-weight:700;font-size:12pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer">💬 WhatsApp</button>
+        <button onclick="shareNative()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:11px;padding:10px 16px;color:var(--txt2);font-weight:600;font-size:12pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer">🔗 Share</button>
+      </div>
+      <button class="btn-g" onclick="closePost()">Ghar Jaao →</button>
+    </div>
+    <div id="post-form">
+      <div class="sh-hdr"><div class="sh-ttl" id="post-modal-title">📸 Ad Post Karo</div><button class="sh-cls" onclick="closePost()">✕</button></div>
+      <div class="fld"><label class="lbl">Category *</label><div class="pcat-grid" id="post-cats"></div></div>
+      <div class="fld" id="other-type-fld" style="display:none"><label class="lbl">📝 Product Type / Naam</label><input id="pf-otype" class="inp" placeholder="e.g. Candle, Handmade Bag, Antique Clock..." maxlength="40"/><div style="color:var(--txt4);font-size:11pxpx;margin-top:3px">Exactly kya bech rahe ho — buyers ko clearly pata chalega</div></div>
+      <label class="lbl">Photos / Video</label>
+      <div class="mtabs"><button class="mtab on" id="mt-photo" onclick="switchMT('photo')">📷 Photos (max 6)</button><button class="mtab" id="mt-video" onclick="switchMT('video')">🎬 Video</button></div>
+      <div id="photo-zone" class="mzone" onclick="document.getElementById('ph-inp').click()">
+        <input type="file" id="ph-inp" accept="image/*" multiple style="display:none" onchange="handlePhotos(this)"/>
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:none;stroke:var(--txt4);stroke-width:1.5;stroke-linecap:round;margin-bottom:7px"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+        <div style="color:var(--txt2);font-weight:600;font-size:13pxpx">Photos tapao ya camera se lo</div>
+        <div style="color:var(--txt4);font-size:11pxpx;margin-top:2px">Max 6 photos · Auto compress hogi</div>
+        <div id="photo-grid" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px"></div>
+      </div>
+      <div id="video-zone" class="mzone" style="display:none" onclick="document.getElementById('vid-inp').click()">
+        <input type="file" id="vid-inp" accept="video/*" style="display:none" onchange="handleVideo(this)"/>
+        <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:none;stroke:var(--txt4);stroke-width:1.5;stroke-linecap:round;margin-bottom:7px"><polygon points="23,7 16,12 23,17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <div style="color:var(--txt2);font-weight:600;font-size:13pxpx">Video tapao (Max 80MB)</div>
+        <div style="color:var(--txt4);font-size:11pxpx;margin-top:2px">Item ka demo buyers ko attract karta hai!</div>
+        <div id="video-preview"></div>
+      </div>
+      <div class="fld"><label class="lbl">Title *</label><input id="pf-ti" class="inp" placeholder="e.g. iPhone 14 Pro, Honda Activa, Sofa Set..." maxlength="80"/><div id="title-count" style="color:var(--txt4);font-size:11pxpx;text-align:right;margin-top:3px">0/80</div></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1"><label class="lbl">Price (₹) *</label><input id="pf-pi" class="inp" type="number" placeholder="0"/></div>
+        <div style="flex:1"><label class="lbl">Original Price ₹</label><input id="pf-op" class="inp" type="number" placeholder="Optional"/></div>
+      </div>
+      <div class="fld"><label class="lbl">Location *</label><input id="pf-vi" class="inp" placeholder="e.g. Andheri, Mumbai" id="pf-vi"/></div>
+      <div class="fld"><label class="lbl">Halat</label>
+        <div class="cond-row"><button id="c-new" class="cond-b" onclick="setCond('New')">✨ Naya</button><button id="c-used" class="cond-b on" onclick="setCond('Used')">🔧 Purana</button><button id="c-refurb" class="cond-b" onclick="setCond('Refurb')">💎 Refurb</button></div>
+      </div>
+      <div class="fld"><label class="lbl">Description</label><textarea id="pf-di" class="inp" rows="3" style="resize:none" placeholder="Age, condition, kya include hai, kyon bech rahe ho..." maxlength="500"></textarea><div id="desc-count" style="color:var(--txt4);font-size:11pxpx;text-align:right;margin-top:3px">0/500</div></div>
+      <div class="tog-row"><span style="font-size:19pxpx">🤝</span><div style="flex:1"><div style="color:var(--txt2);font-size:12pxpx;font-weight:600">Negotiate Ho Sakta Hai?</div></div><label class="tog"><input type="checkbox" id="nego-tog"/><span class="tog-sl"></span></label></div>
+      <div class="tog-row" style="background:rgba(0,224,144,.04);border-color:rgba(0,224,144,.14)"><span style="font-size:19pxpx">💳</span><div style="flex:1"><div style="color:var(--gr);font-size:12pxpx;font-weight:600">UPI Accept Karein?</div></div><label class="tog"><input type="checkbox" id="upi-tog" checked/><span class="tog-sl"></span></label></div>
+      <div class="promo-opt"><span style="font-size:21pxpx">👑</span><div style="flex:1"><div style="color:var(--gd);font-weight:700;font-size:13pxpx">Featured Ad — ₹99</div><div style="color:var(--txt4);font-size:11pxpx;margin-top:1px">Top pe dikhega · 10x zyada views milenge</div></div><label class="tog"><input type="checkbox" id="promo-tog"/><span class="tog-sl"></span></label></div>
+      <button class="btn-p" onclick="submitPost()" id="post-submit-btn">Ad Post Karo — Bilkul Free 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div id="dtl-modal" class="overlay" onclick="if(event.target===this)closeDtl()">
+  <div class="sheet" id="dtl-sheet" style="padding:0;max-height:94vh"></div>
+</div>
+
+<!-- CHAT DETAIL -->
+<div id="chat-detail" class="chat-detail">
+  <div class="cd-hdr">
+    <button class="cd-back" onclick="closeChatDetail()">←</button>
+    <div class="cd-av" id="cd-av">R</div>
+    <div style="flex:1"><div style="font-weight:700;font-size:13pxpx" id="cd-name">—</div><div style="color:var(--gr);font-size:11pxpx;font-weight:600" id="cd-status">🟢 Online</div></div>
+    <button onclick="initiateCall()" style="background:none;font-size:18pxpx;color:var(--txt3);padding:4px">📞</button>
+    <button onclick="openNegoModal()" style="background:rgba(255,107,26,.12);border:1px solid rgba(255,107,26,.3);border-radius:7px;padding:5px 9px;color:var(--or2);font-size:11pxpx;font-weight:700;font-family:'Baloo 2',sans-serif;margin-left:3px">🤝 Nego</button>
+  </div>
+  <div id="chat-item-strip" class="istrip"></div>
+  <div class="cd-msgs" id="cd-msgs"></div>
+  <div class="cd-bar">
+    <button onclick="attachChatImage()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--txt3);flex-shrink:0;padding:0">
+      <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
+    </button>
+    <input type="file" id="chat-img-inp" accept="image/*" style="display:none" onchange="sendChatImage(this)"/>
+    <input class="cd-inp" id="cd-inp" placeholder="Message likho..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+    <button class="cd-send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg></button>
+  </div>
+</div>
+
+<!-- NEGO MODAL -->
+<div id="nego-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">🤝 Price Offer Karo</div><button class="sh-cls" onclick="document.getElementById('nego-modal').classList.remove('open')">✕</button></div>
+    <div style="color:var(--txt3);font-size:13pxpx;margin-bottom:12px">Seller ko seedha apna best offer bhejo</div>
+    <div class="fld"><label class="lbl">Aapka Offer (₹)</label><input id="nego-amt" class="inp" type="number" placeholder="e.g. 45000" style="font-size:21pxpx;font-weight:900;text-align:center"/></div>
+    <div class="nsugg-row" id="nego-sugg-row"></div>
+    <div class="fld"><label class="lbl">Message (Optional)</label><input id="nego-msg" class="inp" placeholder="e.g. Cash ready hai, kal milna hai..."/></div>
+    <button class="btn-p" onclick="sendNegoOffer()">Offer Bhejo 🤝</button>
+  </div>
+</div>
+
+<!-- UPI PAYMENT MODAL -->
+<div id="upi-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">💳 UPI Payment</div><button class="sh-cls" onclick="document.getElementById('upi-modal').classList.remove('open')">✕</button></div>
+    <div class="upi-flow">
+      <div id="upi-pay-success" class="pay-success">
+        <div style="font-size:60pxpx;animation:popIn .5s ease">✅</div>
+        <div style="color:var(--gr);font-weight:900;font-size:20pxpx;margin-top:10px">Payment Ho Gayi!</div>
+        <div id="upi-success-msg" style="color:var(--txt3);font-size:13pxpx;margin-top:5px"></div>
+        <button onclick="document.getElementById('upi-modal').classList.remove('open')" style="margin-top:16px;background:var(--card2);border:1px solid var(--bdr);border-radius:11px;padding:10px 24px;color:var(--txt);font-weight:700;font-size:13pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer">Done ✓</button>
+      </div>
+      <div id="upi-pay-form">
+        <div style="color:var(--txt3);font-size:12pxpx;margin-bottom:4px">Pay karo</div>
+        <div class="upi-amount" id="upi-pay-amount">₹0</div>
+        <div id="upi-pay-to" style="color:var(--txt3);font-size:13pxpx;margin-bottom:16px"></div>
+        <div class="upi-apps">
+          <div class="upi-app" onclick="processUPIPay('GPay')"><div class="upi-app-ico" style="background:#fff">🟢</div><span>GPay</span></div>
+          <div class="upi-app" onclick="processUPIPay('PhonePe')"><div class="upi-app-ico" style="background:#5f259f">🟣</div><span>PhonePe</span></div>
+          <div class="upi-app" onclick="processUPIPay('Paytm')"><div class="upi-app-ico" style="background:#00baf2">🔵</div><span>Paytm</span></div>
+          <div class="upi-app" onclick="processUPIPay('BHIM')"><div class="upi-app-ico" style="background:#f47920">🇮🇳</div><span>BHIM</span></div>
+        </div>
+        <div class="divider-or">YA UPI ID SE</div>
+        <input id="upi-id-inp" class="upi-id-inp" placeholder="yourname@upi" type="text"/>
+        <button onclick="processUPIPay('UPI ID')" class="btn-p">Pay Now 💳</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW MODAL -->
+<div id="review-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">⭐ Review Do</div><button class="sh-cls" onclick="document.getElementById('review-modal').classList.remove('open')">✕</button></div>
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="color:var(--txt3);font-size:13pxpx;margin-bottom:12px" id="review-seller-name">Seller ko rate karo</div>
+      <div class="star-row" style="justify-content:center" id="star-row">
+        <span class="star" onclick="setRating(1)">⭐</span><span class="star" onclick="setRating(2)">⭐</span>
+        <span class="star" onclick="setRating(3)">⭐</span><span class="star" onclick="setRating(4)">⭐</span>
+        <span class="star" onclick="setRating(5)">⭐</span>
+      </div>
+      <div class="star-label" id="star-label">Tap karo rating dene ke liye</div>
+    </div>
+    <div class="fld"><label class="lbl">Review Likho</label><textarea id="review-txt" class="inp" rows="3" style="resize:none" placeholder="Seller ke baare mein kuch batao — genuine tha? Item as described tha?"></textarea></div>
+    <button class="btn-p" onclick="submitReview()">Review Submit Karo ⭐</button>
+  </div>
+</div>
+
+<!-- LANGUAGE MODAL -->
+<div id="lang-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr">
+      <div class="sh-ttl">🌐 Bhasha Chunein / Choose Language</div>
+      <button class="sh-cls" onclick="document.getElementById('lang-modal').classList.remove('open')">✕</button>
+    </div>
+    <div style="color:var(--txt3);font-size:12pxpx;margin-bottom:14px;line-height:1.5">Apni pasandeeda bhasha mein app use karo · अपनी भाषा चुनें</div>
+    <div id="lang-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+  </div>
+</div>
+
+<!-- UPI SETTINGS MODAL -->
+<div id="upi-settings-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">💳 UPI Setup</div><button class="sh-cls" onclick="document.getElementById('upi-settings-modal').classList.remove('open')">✕</button></div>
+    <div style="color:var(--txt3);font-size:13pxpx;margin-bottom:14px">Apna UPI ID add karo taaki buyers seedhe pay kar sakein</div>
+    <div class="fld"><label class="lbl">UPI ID</label><input id="upi-setting-inp" class="inp" placeholder="yourname@okhdfcbank / @ybl / @upi" type="text"/></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <span onclick="pasteUPIExample('@okicici')" style="background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:5px 10px;font-size:11pxpx;color:var(--txt3);cursor:pointer">@okicici</span>
+      <span onclick="pasteUPIExample('@ybl')" style="background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:5px 10px;font-size:11pxpx;color:var(--txt3);cursor:pointer">@ybl</span>
+      <span onclick="pasteUPIExample('@paytm')" style="background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:5px 10px;font-size:11pxpx;color:var(--txt3);cursor:pointer">@paytm</span>
+      <span onclick="pasteUPIExample('@upi')" style="background:var(--card3);border:1px solid var(--bdr);border-radius:7px;padding:5px 10px;font-size:11pxpx;color:var(--txt3);cursor:pointer">@upi</span>
+    </div>
+    <button class="btn-p" onclick="saveUPIId()">Save UPI ID 💾</button>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="edit-profile-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">✏️ Profile Edit</div><button class="sh-cls" onclick="document.getElementById('edit-profile-modal').classList.remove('open')">✕</button></div>
+    <div class="fld"><label class="lbl">Naam</label><input id="ep-name" class="inp" placeholder="Aapka naam" maxlength="40"/></div>
+    <div class="fld"><label class="lbl">Shehar</label><input id="ep-city" class="inp" placeholder="e.g. Mumbai, Delhi, Jaipur" maxlength="40"/></div>
+    <div class="fld"><label class="lbl">Role</label>
+      <div style="display:flex;gap:8px;margin-top:5px">
+        <button id="ep-buyer" onclick="epRole='buyer';document.getElementById('ep-buyer').style.opacity='1';document.getElementById('ep-seller').style.opacity='.45'" style="flex:1;background:rgba(61,127,255,.1);border:1px solid rgba(61,127,255,.3);border-radius:9px;padding:8px;color:var(--bl);font-size:12pxpx;font-weight:700;font-family:'Baloo 2',sans-serif">🧑 Buyer</button>
+        <button id="ep-seller" onclick="epRole='seller';document.getElementById('ep-seller').style.opacity='1';document.getElementById('ep-buyer').style.opacity='.45'" style="flex:1;background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.3);border-radius:9px;padding:8px;color:var(--or2);font-size:12pxpx;font-weight:700;font-family:'Baloo 2',sans-serif">👷 Seller</button>
+      </div>
+    </div>
+    <button class="btn-p" onclick="saveEditProfile()">Save Karo 💾</button>
+  </div>
+</div>
+
+<!-- TRANSACTION HISTORY MODAL -->
+<div id="txn-modal" class="overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="sheet">
+    <div class="sh-hdr"><div class="sh-ttl">💰 Transaction History</div><button class="sh-cls" onclick="document.getElementById('txn-modal').classList.remove('open')">✕</button></div>
+    <div id="txn-list"></div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-ov" id="confirm-ov">
+  <div class="confirm-box">
+    <div class="confirm-ico" id="confirm-ico">⚠️</div>
+    <div class="confirm-h" id="confirm-h">Sure ho?</div>
+    <div class="confirm-s" id="confirm-s">Yeh action undo nahi ho sakti</div>
+    <div class="confirm-btns">
+      <button class="cb-cancel" onclick="confirmCancel()">Cancel</button>
+      <button class="cb-ok" id="confirm-ok-btn" onclick="confirmOK()">Haan, Karo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+</div>
+<script>
+// ═══════════════════════════════════════════
+// SVG ICONS
+// ═══════════════════════════════════════════
+const CSVG={
+  all:`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+  electronics:`<svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>`,
+  vehicles:`<svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>`,
+  furniture:`<svg viewBox="0 0 24 24"><path d="M20 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v3"/><path d="M2 11v5a2 2 0 002 2h16a2 2 0 002-2v-5a1 1 0 00-1-1H3a1 1 0 00-1 1z"/><path d="M4 18v2M20 18v2M12 4v5"/></svg>`,
+  fashion:`<svg viewBox="0 0 24 24"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.86H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.86l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>`,
+  appliances:`<svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  sports:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>`,
+  books:`<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>`,
+  property:`<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>`,
+  jobs:`<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="12"/><path d="M2 12h20"/></svg>`,
+  kids:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+  pets:`<svg viewBox="0 0 24 24"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/><path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.96-1.45-2.344-2.5"/><path d="M8 14v.5A3.5 3.5 0 0011.5 18h1a3.5 3.5 0 003.5-3.5V14a2 2 0 00-2-2h-4a2 2 0 00-2 2z"/></svg>`,
+  tools:`<svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>`,
+  music:`<svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  other:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
+};
+const CATS=[
+  {id:'all',l:'All'},{id:'electronics',l:'Electronics'},{id:'vehicles',l:'Vehicles'},
+  {id:'furniture',l:'Furniture'},{id:'fashion',l:'Fashion'},{id:'appliances',l:'Appliances'},
+  {id:'sports',l:'Sports'},{id:'books',l:'Books'},{id:'property',l:'Property'},
+  {id:'jobs',l:'Jobs'},{id:'kids',l:'Kids'},{id:'pets',l:'Pets'},
+  {id:'tools',l:'Tools'},{id:'music',l:'Music'},{id:'other',l:'Other'},
+];
+const BDGCLR={Hot:'#ff4466',New:'#ff6b1a',Deal:'#00e090',Rare:'#ffd740'};
+const CDOTS=[
+  {n:'Mumbai',x:28,y:60,c:'#ff6b1a'},{n:'Delhi',x:43,y:24,c:'#ff4466'},
+  {n:'Bangalore',x:36,y:82,c:'#00e090'},{n:'Hyderabad',x:43,y:68,c:'#ff6b1a'},
+  {n:'Chennai',x:47,y:84,c:'#ff6b1a'},{n:'Kolkata',x:69,y:47,c:'#ff6b1a'},
+  {n:'Pune',x:29,y:63,c:'#00e090'},{n:'Jaipur',x:38,y:30,c:'#ff6b1a'},
+  {n:'Lucknow',x:54,y:31,c:'#ff6b1a'},{n:'Ahmedabad',x:22,y:43,c:'#ff6b1a'},
+  {n:'Nagpur',x:45,y:55,c:'#ff6b1a'},{n:'Kochi',x:34,y:90,c:'#00e090'},
+  {n:'Chandigarh',x:43,y:18,c:'#3d7fff'},{n:'Indore',x:36,y:47,c:'#ff6b1a'},
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let LISTINGS=[],CHATS=[],NOTIFS=[],REVIEWS={};
+let user=null;
+try{user=JSON.parse(localStorage.getItem('ab_user')||'null')}catch(e){}
+try{LISTINGS=JSON.parse(localStorage.getItem('ab_listings')||'[]')}catch(e){}
+try{CHATS=JSON.parse(localStorage.getItem('ab_chats')||'[]')}catch(e){}
+try{NOTIFS=JSON.parse(localStorage.getItem('ab_notifs')||'[]')}catch(e){}
+try{REVIEWS=JSON.parse(localStorage.getItem('ab_reviews')||'{}')}catch(e){}
+let userRole='buyer';
+let savedIds=new Set();
+try{savedIds=new Set(JSON.parse(localStorage.getItem('ab_saved')||'[]'))}catch(e){}
+let recentlyViewed=[];
+try{recentlyViewed=JSON.parse(localStorage.getItem('ab_rv')||'[]')}catch(e){}
+let SF={cat:'all',cond:'all',minP:'',maxP:'',loc:'',upi:false,nego:false,verified:false,video:false,featured:false,discount:false,avail:false,sort:'newest'};
+let postCat='electronics',cond='Used',activeChatId=null,negoListing=null;
+let postPhotos=[],postVideo=null,mediaMode='photo';
+let nextId=LISTINGS.length?Math.max(...LISTINGS.map(l=>l.id))+1:1;
+let searchHistory=[];
+try{searchHistory=JSON.parse(localStorage.getItem('ab_sh')||'[]')}catch(e){}
+let currentPage=1,itemsPerPage=10,filteredListings=[];
+let deferredPWAPrompt=null;
+let otpTimerInterval=null,currentRating=0,confirmCallback=null;
+let editingListingId=null;
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function $(id){return document.getElementById(id)}
+function toast(msg,dur=2600,type=''){
+  const t=$('toast');t.textContent=msg;
+  t.style.borderColor=type==='success'?'rgba(0,224,144,.4)':type==='error'?'rgba(255,68,102,.4)':'';
+  t.classList.add('show');setTimeout(()=>{t.classList.remove('show');t.style.borderColor='';},dur);
+}
+function goPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active')}
+function fmt(n){if(!n&&n!==0)return '₹—';if(n>=100000)return '₹'+(n/100000).toFixed(1)+'L';if(n>=1000)return '₹'+(n/1000).toFixed(n%1000===0?0:1)+'k';return '₹'+n}
+function sL(){localStorage.setItem('ab_listings',JSON.stringify(LISTINGS))}
+function sC(){localStorage.setItem('ab_chats',JSON.stringify(CHATS))}
+function sN(){localStorage.setItem('ab_notifs',JSON.stringify(NOTIFS))}
+function sR(){localStorage.setItem('ab_reviews',JSON.stringify(REVIEWS))}
+function timeAgo(ts){if(!ts)return '';const d=Date.now()-ts,m=Math.floor(d/60000),h=Math.floor(d/3600000),dy=Math.floor(d/86400000);if(d<60000)return 'Abhi';if(m<60)return m+'m pehle';if(h<24)return h+'h pehle';if(dy<7)return dy+'d pehle';return new Date(ts).toLocaleDateString('hi-IN');}
+function compressImage(dataUrl,maxW=800,quality=0.75){return new Promise(res=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');const r=Math.min(1,maxW/img.width);c.width=img.width*r;c.height=img.height*r;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',quality));};img.src=dataUrl;});}
+function addNotif(ico,title,body){NOTIFS.unshift({id:Date.now(),ico,title,body,time:Date.now(),unread:true});if(NOTIFS.length>50)NOTIFS.pop();sN();updateNotifDot();}
+function updateNotifDot(){const u=NOTIFS.filter(n=>n.unread).length;const d=$('notif-dot');if(d)d.style.display=u?'block':'none';if($('notif-count-p'))$('notif-count-p').textContent=u||NOTIFS.length;}
+
+// ═══════════════════════════════════════════
+// CONFIRM DIALOG
+// ═══════════════════════════════════════════
+function showConfirm(ico,h,s,okTxt,okColor,cb){
+  $('confirm-ico').textContent=ico;$('confirm-h').textContent=h;$('confirm-s').textContent=s;
+  $('confirm-ok-btn').textContent=okTxt;$('confirm-ok-btn').style.background=okColor||'var(--or)';
+  confirmCallback=cb;$('confirm-ov').classList.add('open');
+}
+function confirmOK(){$('confirm-ov').classList.remove('open');if(confirmCallback)confirmCallback();confirmCallback=null;}
+function confirmCancel(){$('confirm-ov').classList.remove('open');confirmCallback=null;}
+
+// ═══════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPWAPrompt=e;showPWABanner();});
+function showPWABanner(){
+  if(localStorage.getItem('ab_pwa_dismissed'))return;
+  $('pwa-banner-wrap').innerHTML=`<div class="pwa-banner"><div class="pwa-banner-ico">📱</div><div style="flex:1"><div style="font-weight:700;font-size:13pxpx">App Install Karo</div><div style="color:var(--txt3);font-size:11pxpx;margin-top:2px">Home screen pe add karo — faster access</div></div><button class="pwa-install-btn" onclick="openPWAInstall()">Install</button><button class="pwa-close-btn" onclick="dismissPWA()">✕</button></div>`;
+}
+function dismissPWA(){localStorage.setItem('ab_pwa_dismissed','1');$('pwa-banner-wrap').innerHTML='';}
+function openPWAInstall(){
+  if(deferredPWAPrompt){deferredPWAPrompt.prompt();deferredPWAPrompt.userChoice.then(r=>{if(r.outcome==='accepted'){toast('✅ App install ho rahi hai!','success');dismissPWA();}});deferredPWAPrompt=null;}
+  else{toast('Browser mein: Menu → Add to Home Screen','3000');}
+}
+// PWA Manifest
+const manifest={name:'Apna Bazar',short_name:'ApnaBazar',description:'India Ka Local Marketplace',start_url:'.',display:'standalone',background_color:'#0a0a12',theme_color:'#ff6b1a',icons:[{src:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23ff6b1a"/><text y=".9em" font-size="80">🛍️</text></svg>',sizes:'any',type:'image/svg+xml'}]};
+const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+const murl=URL.createObjectURL(blob);if($('pwa-manifest'))$('pwa-manifest').href=murl;
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{user?enterMain():goPage('pg-login');},2400);
+  // Title char count
+  const ti=$('pf-ti');if(ti)ti.addEventListener('input',()=>{if($('title-count'))$('title-count').textContent=ti.value.length+'/80';});
+  const di=$('pf-di');if(di)di.addEventListener('input',()=>{if($('desc-count'))$('desc-count').textContent=di.value.length+'/500';});
+});
+
+// ═══════════════════════════════════════════
+// OTP / AUTH
+// ═══════════════════════════════════════════
+function pickRole(r){userRole=r;$('role-buyer').classList.toggle('sel',r==='buyer');$('role-seller').classList.toggle('sel',r==='seller');}
+function sendOTP(){
+  const ph=$('l-phone').value.trim(),nm=$('l-name').value.trim(),ci=$('l-city').value.trim();
+  if(!ph||ph.length<10){$('l-phone').classList.add('shake');setTimeout(()=>$('l-phone').classList.remove('shake'),500);toast('10-digit number daalo','error');return;}
+  if(!nm){$('l-name').classList.add('shake');setTimeout(()=>$('l-name').classList.remove('shake'),500);toast('Naam daalo','error');return;}
+  $('otp-phone-show').textContent=ph;
+  $('login-step1').style.display='none';$('login-step2').style.display='block';
+  toast('📱 OTP bheja: 1234 (demo)');
+  startOTPTimer();
+  // Store pending user info
+  window._pendingUser={ph,nm,ci:ci||'India'};
+}
+function startOTPTimer(){
+  let s=30;if(otpTimerInterval)clearInterval(otpTimerInterval);
+  $('otp-resend-btn').style.color='var(--txt4)';$('otp-resend-btn').style.pointerEvents='none';
+  otpTimerInterval=setInterval(()=>{
+    s--;$('otp-timer').textContent='('+s+'s)';
+    if(s<=0){clearInterval(otpTimerInterval);$('otp-timer').textContent='';$('otp-resend-btn').style.color='var(--or2)';$('otp-resend-btn').style.pointerEvents='';}
+  },1000);
+}
+function resendOTP(){toast('📱 Naya OTP bheja: 1234');startOTPTimer();}
+function otpNext(el,i){
+  if(el.value){const bs=document.querySelectorAll('.otp-b');if(i<3){bs[i+1].focus();}else{verifyOTP();}}
+  else if(event.key==='Backspace'&&i>0){const bs=document.querySelectorAll('.otp-b');bs[i-1].focus();}
+}
+function verifyOTP(){
+  const otp=[...document.querySelectorAll('.otp-b')].map(b=>b.value).join('');
+  if(otp.length<4){toast('4-digit OTP daalo','error');return;}
+  if(otp!=='1234'){document.querySelectorAll('.otp-b').forEach(b=>{b.classList.add('shake');setTimeout(()=>b.classList.remove('shake'),500);});toast('❌ Galat OTP — Demo OTP: 1234','error');return;}
+  const p=window._pendingUser;
+  user={name:p.nm,phone:p.ph,city:p.ci,role:userRole,joinedAt:Date.now(),verified:false,upiId:'',profilePhoto:null,soldCount:0,reviews:[],rating:0};
+  localStorage.setItem('ab_user',JSON.stringify(user));
+  clearInterval(otpTimerInterval);
+  enterMain();
+}
+function goBackToLogin(){$('login-step1').style.display='block';$('login-step2').style.display='none';document.querySelectorAll('.otp-b').forEach(b=>b.value='');}
+function doLogout(){
+  showConfirm('🚪','Logout?','Aapka account se logout ho jaoge','Logout Karo','var(--rd)',()=>{
+    user=null;localStorage.removeItem('ab_user');closeChatDetail();document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));goPage('pg-login');
+    $('login-step1').style.display='block';$('login-step2').style.display='none';
+  });
+}
+function clearAllData(){
+  showConfirm('🗑️','Sab Data Delete?','Listings, chats, saved — sab kuch permanently delete ho jaega!','Haan, Delete Karo','var(--rd)',()=>{
+    ['ab_listings','ab_chats','ab_saved','ab_rv','ab_notifs','ab_reviews','ab_sh'].forEach(k=>localStorage.removeItem(k));
+    LISTINGS=[];CHATS=[];NOTIFS=[];savedIds=new Set();recentlyViewed=[];searchHistory=[];nextId=1;
+    updateCounts();buildCats();buildQStats();buildTicker();renderListings();
+    toast('✅ Sab data delete ho gaya');
+  });
+}
+
+// ═══════════════════════════════════════════
+// ENTER MAIN
+// ═══════════════════════════════════════════
+function enterMain(){
+  if(user){
+    const ini=(user.name||'?')[0].toUpperCase();
+    const av=$('prof-av-ico');
+    if(av){if(user.profilePhoto){av.innerHTML=`<img src="${user.profilePhoto}" style="width:100%;height:100%;object-fit:cover"/>`;av.style.fontSize='';}else{av.textContent=ini;}}
+    if($('p-name'))$('p-name').textContent=user.name;
+    if($('p-ph'))$('p-ph').textContent='📞 +91 '+user.phone;
+    if($('p-loc'))$('p-loc').textContent='📍 '+(user.city||'India');
+    if($('p-role-tag'))$('p-role-tag').textContent=user.role==='seller'?'👷 Seller Account':'🧑 Buyer Account';
+    if($('p-verified-badge'))$('p-verified-badge').style.display=user.verified?'flex':'none';
+    if($('ps-saved'))$('ps-saved').textContent=savedIds.size;
+    if($('upi-id-display'))$('upi-id-display').textContent=user.upiId?user.upiId.substring(0,15)+'...':'Set karo →';
+    updateCounts();
+  }
+  goPage('pg-main');
+  buildCats();buildMapDots();buildTicker();buildChats();renderListings();buildQStats();buildSFPCats();buildNotifPanel();updateNotifDot();
+  setTimeout(detectLocation,1200);
+  // Show PWA banner after 3 seconds
+  setTimeout(()=>{if(!localStorage.getItem('ab_pwa_dismissed')&&deferredPWAPrompt)showPWABanner();},3000);
+}
+
+function updateCounts(){
+  const my=LISTINGS.filter(l=>l.ownerPhone===user?.phone&&!l.sold).length;
+  const sold=LISTINGS.filter(l=>l.ownerPhone===user?.phone&&l.sold).length;
+  if($('ps-ads'))$('ps-ads').textContent=my;
+  if($('ps-sold'))$('ps-sold').textContent=sold;
+  if($('my-ads-b'))$('my-ads-b').textContent=my;
+  const uc=CHATS.filter(c=>c.unread>0).length;
+  const cb=$('chat-badge');if(cb){cb.style.display=uc?'flex':'none';cb.textContent=uc;}
+  if($('chat-cnt-p'))$('chat-cnt-p').textContent=CHATS.length;
+  // Rating
+  const myRevs=REVIEWS[user?.phone]||[];
+  if(myRevs.length>0){const avg=myRevs.reduce((a,r)=>a+r.rating,0)/myRevs.length;if($('ps-rating'))$('ps-rating').textContent=avg.toFixed(1)+'★';}
+}
+
+// ═══════════════════════════════════════════
+// PROFILE PHOTO
+// ═══════════════════════════════════════════
+function updateProfilePhoto(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async e=>{
+    const compressed=await compressImage(e.target.result,200,0.8);
+    user.profilePhoto=compressed;localStorage.setItem('ab_user',JSON.stringify(user));
+    const av=$('prof-av-ico');
+    if(av){av.innerHTML=`<img src="${compressed}" style="width:100%;height:100%;object-fit:cover"/>`;av.style.fontSize='';}
+    toast('✅ Profile photo update ho gayi!','success');
+  };r.readAsDataURL(f);
+}
+
+// ═══════════════════════════════════════════
+// UPI SETTINGS
+// ═══════════════════════════════════════════
+function openUPISettings(){if($('upi-setting-inp')&&user?.upiId)$('upi-setting-inp').value=user.upiId;$('upi-settings-modal').classList.add('open');}
+function pasteUPIExample(suffix){if($('upi-setting-inp')){const p=user?.phone||'';$('upi-setting-inp').value=p+suffix;}}
+function saveUPIId(){const id=($('upi-setting-inp').value||'').trim();if(!id){toast('UPI ID daalo','error');return;}user.upiId=id;localStorage.setItem('ab_user',JSON.stringify(user));$('upi-settings-modal').classList.remove('open');if($('upi-id-display'))$('upi-id-display').textContent=id.length>15?id.substring(0,15)+'...':id;toast('✅ UPI ID save ho gayi: '+id,'success');}
+
+// ═══════════════════════════════════════════
+// LOCATION
+// ═══════════════════════════════════════════
+function detectLocation(){
+  if(!navigator.geolocation){toast('Location support nahi hai');return;}
+  const lt=$('loc-txt');lt.textContent='📡 Dhundh raha hai...';
+  const CL=[
+    {n:'Mumbai',s:'Maharashtra',lat:19.076,lng:72.877},{n:'Delhi',s:'Delhi',lat:28.704,lng:77.102},
+    {n:'Bangalore',s:'Karnataka',lat:12.972,lng:77.594},{n:'Hyderabad',s:'Telangana',lat:17.385,lng:78.487},
+    {n:'Jaipur',s:'Rajasthan',lat:26.912,lng:75.787},{n:'Pune',s:'Maharashtra',lat:18.52,lng:73.856},
+    {n:'Chennai',s:'Tamil Nadu',lat:13.083,lng:80.27},{n:'Kolkata',s:'West Bengal',lat:22.572,lng:88.364},
+    {n:'Lucknow',s:'Uttar Pradesh',lat:26.846,lng:80.946},{n:'Ahmedabad',s:'Gujarat',lat:23.022,lng:72.571},
+    {n:'Indore',s:'MP',lat:22.719,lng:75.857},{n:'Nagpur',s:'Maharashtra',lat:21.145,lng:79.088},
+    {n:'Kochi',s:'Kerala',lat:9.931,lng:76.267},{n:'Chandigarh',s:'Punjab',lat:30.733,lng:76.779},
+  ];
+  function hav(la1,ln1,la2,ln2){const R=6371,dl=(la2-la1)*Math.PI/180,dn=(ln2-ln1)*Math.PI/180;const a=Math.sin(dl/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dn/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+  navigator.geolocation.getCurrentPosition(p=>{
+    const{latitude:la,longitude:ln}=p.coords;
+    let nr=CL[0],md=hav(la,ln,CL[0].lat,CL[0].lng);
+    CL.forEach(c=>{const d=hav(la,ln,c.lat,c.lng);if(d<md){md=d;nr=c;}});
+    lt.textContent='🟢 '+nr.n+', '+nr.s;lt.style.color='var(--gr)';
+    toast('📍 '+nr.n+' (~'+Math.round(md)+'km)');
+    if(user){user.city=nr.n;localStorage.setItem('ab_user',JSON.stringify(user));if($('p-loc'))$('p-loc').textContent='📍 '+nr.n+', '+nr.s;}
+    if($('pf-vi')&&!$('pf-vi').value)$('pf-vi').value=nr.n+', '+nr.s;
+  },()=>{lt.textContent='📍 Location tap karo →';lt.style.color='';toast('❌ Location access deny hai — Settings mein allow karo');});
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function switchTab(t){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  $('tab-'+t).classList.add('active');
+  ['home','saved','chat','profile'].forEach(id=>{const b=$('nb-'+id);if(b)b.classList.toggle('on',id===t)});
+  if(t==='saved')buildSaved();
+  if(t==='chat')buildChats();
+  if(t==='home'){buildRV();buildQStats();}
+  if(t==='profile')updateCounts();
+}
+
+// ═══════════════════════════════════════════
+// QUICK STATS
+// ═══════════════════════════════════════════
+function buildQStats(){
+  if(!$('qstats'))return;
+  const total=LISTINGS.filter(l=>!l.sold).length;
+  const cats=new Set(LISTINGS.map(l=>l.cat)).size;
+  const myAds=LISTINGS.filter(l=>l.ownerPhone===user?.phone&&!l.sold).length;
+  $('qstats').innerHTML=[
+    {ico:'📦',v:total,l:'Listings'},{ico:'🏷️',v:cats||0,l:'Categories'},
+    {ico:'📝',v:myAds,l:'Meri Ads'},{ico:'❤️',v:savedIds.size,l:'Saved'},
+  ].map(s=>`<div class="qstat"><div style="font-size:20pxpx">${s.ico}</div><div><div class="qstat-v">${s.v}</div><div class="qstat-l">${s.l}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// RECENTLY VIEWED
+// ═══════════════════════════════════════════
+function addRV(id){recentlyViewed=recentlyViewed.filter(x=>x!==id);recentlyViewed.unshift(id);if(recentlyViewed.length>8)recentlyViewed=recentlyViewed.slice(0,8);localStorage.setItem('ab_rv',JSON.stringify(recentlyViewed));buildRV();}
+function buildRV(){
+  const items=recentlyViewed.map(id=>LISTINGS.find(l=>l.id===id)).filter(Boolean);
+  const sec=$('rv-section'),list=$('rv-list');if(!sec||!list)return;
+  if(!items.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  list.innerHTML=items.map(l=>`<div class="rv-card" onclick="openDtl(${l.id})"><div class="rv-img" style="position:relative">${l.photos&&l.photos.length?`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`:`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${CSVG[l.cat]||CSVG.other}</div>`}</div><div class="rv-info"><div style="font-size:11pxpx;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--txt)">${l.t}</div><div style="font-size:11pxpx;font-weight:900;color:var(--or2);margin-top:1px">${fmt(l.p)}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// CATEGORIES
+// ═══════════════════════════════════════════
+function buildCats(){
+  const counts={all:LISTINGS.filter(l=>!l.sold).length};
+  LISTINGS.filter(l=>!l.sold).forEach(l=>{counts[l.cat]=(counts[l.cat]||0)+1;});
+  if(!$('cat-bar'))return;
+  $('cat-bar').innerHTML=CATS.map(c=>`<div class="hcat${SF.cat===c.id?' on':''}" onclick="quickCat('${c.id}')"><div class="hcat-ico">${CSVG[c.id]||CSVG.other}${counts[c.id]?`<div class="hcat-cnt">${counts[c.id]}</div>`:''}</div><div class="hcat-lbl">${c.l}</div></div>`).join('');
+}
+function quickCat(id){SF.cat=id;buildCats();renderListings();updateAFBar();}
+
+// ═══════════════════════════════════════════
+// SEARCH & SUGGESTIONS
+// ═══════════════════════════════════════════
+function onSearch(){renderListings();if($('srch').value.length>1)showSuggestions();else hideSugg();}
+function showSuggestions(){
+  const q=($('srch').value||'').toLowerCase().trim();
+  const box=$('srch-sugg');if(!box)return;
+  const items=[];
+  // Recent searches
+  if(!q){searchHistory.slice(0,5).forEach(h=>items.push({type:'history',text:h}));}
+  else{
+    // Matching categories
+    CATS.filter(c=>c.id!=='all'&&c.l.toLowerCase().includes(q)).slice(0,2).forEach(c=>items.push({type:'cat',text:c.l,id:c.id}));
+    // Matching listings
+    LISTINGS.filter(l=>!l.sold&&(l.t.toLowerCase().includes(q)||(l.loc||'').toLowerCase().includes(q))).slice(0,5).forEach(l=>items.push({type:'listing',text:l.t,sub:fmt(l.p),id:l.id}));
+  }
+  if(!items.length){box.style.display='none';return;}
+  box.style.display='block';
+  box.innerHTML=items.map(it=>{
+    if(it.type==='history')return`<div class="sugg-item" onclick="applySugg('${it.text}')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span>${it.text}</span></div>`;
+    if(it.type==='cat')return`<div class="sugg-item" onclick="quickCatSugg('${it.id}','${it.text}')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>${it.text}</span></div>`;
+    return`<div class="sugg-item" onclick="applySuggListing(${it.id},'${it.text.replace(/'/g,"\\'")}')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span style="flex:1">${it.text}</span><span style="color:var(--or2);font-size:11pxpx">${it.sub}</span></div>`;
+  }).join('');
+}
+function hideSugg(){if($('srch-sugg'))$('srch-sugg').style.display='none';}
+function applySugg(txt){$('srch').value=txt;hideSugg();saveSearch(txt);renderListings();}
+function applySuggListing(id,txt){$('srch').value=txt;hideSugg();saveSearch(txt);renderListings();setTimeout(()=>openDtl(id),100);}
+function quickCatSugg(id,txt){$('srch').value='';SF.cat=id;hideSugg();saveSearch(txt);buildCats();renderListings();updateAFBar();}
+function saveSearch(q){if(!q)return;searchHistory=searchHistory.filter(x=>x!==q);searchHistory.unshift(q);if(searchHistory.length>10)searchHistory.pop();localStorage.setItem('ab_sh',JSON.stringify(searchHistory));}
+
+// ═══════════════════════════════════════════
+// FILTER PANEL
+// ═══════════════════════════════════════════
+function buildSFPCats(){
+  if(!$('sfp-cats'))return;
+  $('sfp-cats').innerHTML=CATS.filter(c=>c.id!=='all').map(c=>`<div class="cat-btn${SF.cat===c.id?' on':''}" id="sfpc-${c.id}" onclick="toggleSFPCat('${c.id}')">${CSVG[c.id]||CSVG.other}<span>${c.l}</span></div>`).join('');
+}
+function toggleSFPCat(id){SF.cat=SF.cat===id?'all':id;buildSFPCats();}
+function setCF(v,el){SF.cond=v;document.querySelectorAll('.cond-f').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function toggleFT(k){SF[k]=!SF[k];$('ft-'+k).classList.toggle('on',SF[k]);}
+function setSFPSort(v,el){SF.sort=v;document.querySelectorAll('.sort-b').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function openSFP(){
+  buildSFPCats();
+  ['all','new','used','refurb'].forEach(v=>{const b=$('cf-'+v);if(b)b.classList.toggle('on',SF.cond===v)});
+  ['upi','nego','verified','video','featured','discount'].forEach(k=>{const b=$('ft-'+k);if(b)b.classList.toggle('on',SF[k])});
+  ['newest','priceh','pricel','views'].forEach(v=>{const b=$('sb-'+v);if(b)b.classList.toggle('on',SF.sort===v)});
+  if($('pf-min'))$('pf-min').value=SF.minP;if($('pf-max'))$('pf-max').value=SF.maxP;if($('pf-loc'))$('pf-loc').value=SF.loc;
+  $('sfp').classList.add('open');
+}
+function closeSFP(){$('sfp').classList.remove('open')}
+function applyFilters(){
+  SF.minP=$('pf-min').value;SF.maxP=$('pf-max').value;SF.loc=($('pf-loc').value||'').trim();
+  closeSFP();currentPage=1;renderListings();buildCats();updateAFBar();
+}
+function clearFilters(){
+  SF={cat:'all',cond:'all',minP:'',maxP:'',loc:'',upi:false,nego:false,verified:false,video:false,featured:false,discount:false,avail:false,sort:'newest'};
+  buildSFPCats();
+  document.querySelectorAll('.cond-f').forEach(b=>b.classList.remove('on'));if($('cf-all'))$('cf-all').classList.add('on');
+  ['upi','nego','verified','video','featured','discount','avail'].forEach(k=>{const b=$('ft-'+k);if(b)b.classList.remove('on')});
+  document.querySelectorAll('.sort-b').forEach(b=>b.classList.remove('on'));if($('sb-newest'))$('sb-newest').classList.add('on');
+  ['pf-min','pf-max','pf-loc'].forEach(id=>{const e=$(id);if(e)e.value='';});
+  if($('srch'))$('srch').value='';
+  closeSFP();currentPage=1;renderListings();buildCats();updateAFBar();toast('Sab filters clear ✓');
+}
+function updateAFBar(){
+  const tags=[];
+  if(SF.cat!=='all')tags.push({l:'📦 '+CATS.find(c=>c.id===SF.cat)?.l,k:'cat'});
+  if(SF.cond!=='all')tags.push({l:SF.cond==='new'?'✨ Naya':SF.cond==='used'?'🔧 Purana':'💎 Refurb',k:'cond'});
+  if(SF.minP||SF.maxP)tags.push({l:'💰 '+(SF.minP?fmt(SF.minP):'₹0')+'–'+(SF.maxP?fmt(SF.maxP):'Max'),k:'price'});
+  if(SF.loc)tags.push({l:'📍 '+SF.loc,k:'loc'});
+  if(SF.upi)tags.push({l:'💳 UPI',k:'upi'});if(SF.nego)tags.push({l:'🤝 Nego',k:'nego'});
+  if(SF.verified)tags.push({l:'✅ Verified',k:'verified'});if(SF.video)tags.push({l:'🎬 Video',k:'video'});
+  if(SF.featured)tags.push({l:'👑 Featured',k:'featured'});if(SF.discount)tags.push({l:'🏷️ Discount',k:'discount'});if(SF.avail)tags.push({l:'🟢 Available',k:'avail'});
+  const ab=$('afbar'),fc=$('filter-count'),fab=$('filter-fab');
+  if(tags.length){
+    ab.style.display='flex';
+    ab.innerHTML=tags.map(t=>`<div class="aftag">${t.l}<button onclick="removeTag('${t.k}')">✕</button></div>`).join('')+`<div class="aftag" style="cursor:pointer;background:rgba(255,68,102,.1);border-color:rgba(255,68,102,.3);color:var(--rd)" onclick="clearFilters()">Clear All ✕</div>`;
+    fc.style.display='flex';fc.textContent=tags.length;if(fab)fab.classList.add('active');
+  } else {ab.style.display='none';fc.style.display='none';if(fab)fab.classList.remove('active');}
+}
+function removeTag(k){if(k==='cat')SF.cat='all';else if(k==='cond')SF.cond='all';else if(k==='price'){SF.minP='';SF.maxP='';}else if(k==='loc')SF.loc='';else SF[k]=false;currentPage=1;renderListings();buildCats();updateAFBar();}
+function toggleSort(){SF.sort=SF.sort==='priceh'?'pricel':'priceh';currentPage=1;renderListings();}
+
+// ═══════════════════════════════════════════
+// RENDER LISTINGS (with pagination)
+// ═══════════════════════════════════════════
+function renderListings(){
+  const q=($('srch').value||'').toLowerCase();
+  let items=[...LISTINGS];
+  if(q){saveSearch(q);items=items.filter(l=>l.t.toLowerCase().includes(q)||(l.loc||'').toLowerCase().includes(q)||(l.d||'').toLowerCase().includes(q)||(l.otype||'').toLowerCase().includes(q)||CATS.find(c=>c.id===l.cat)?.l.toLowerCase().includes(q));}
+  if(SF.cat!=='all')items=items.filter(l=>l.cat===SF.cat);
+  if(SF.cond==='new')items=items.filter(l=>l.cond==='New');else if(SF.cond==='used')items=items.filter(l=>l.cond==='Used');else if(SF.cond==='refurb')items=items.filter(l=>l.cond==='Refurb');
+  const mn=parseFloat(SF.minP)||0,mx=parseFloat(SF.maxP)||Infinity;if(SF.minP||SF.maxP)items=items.filter(l=>l.p>=mn&&l.p<=mx);
+  if(SF.loc)items=items.filter(l=>(l.loc||'').toLowerCase().includes(SF.loc.toLowerCase()));
+  if(SF.upi)items=items.filter(l=>l.upi);if(SF.nego)items=items.filter(l=>l.nego);if(SF.verified)items=items.filter(l=>l.v);if(SF.video)items=items.filter(l=>l.video);if(SF.featured)items=items.filter(l=>l.featured);if(SF.discount)items=items.filter(l=>l.op&&l.op>l.p);if(SF.avail)items=items.filter(l=>!l.sold);
+  items.sort((a,b)=>{if(a.featured!==b.featured)return a.featured?-1:1;if(SF.sort==='newest')return(b.postedAt||0)-(a.postedAt||0);if(SF.sort==='pricel')return a.p-b.p;if(SF.sort==='views')return(b.views||0)-(a.views||0);return b.p-a.p;});
+  filteredListings=items;
+  if($('lst-count'))$('lst-count').textContent=items.length+' listings'+(q?' for "'+q+'"':'');
+  if(!items.length){
+    const empty=LISTINGS.length===0;
+    if($('listings-wrap'))$('listings-wrap').innerHTML=`<div class="empty"><div class="empty-ico">${empty?'🛍️':'🔍'}</div><div class="empty-h">${empty?'Koi listing nahi hai':'Koi item nahi mila'}</div><div class="empty-s">${empty?'Pehli ad post karo — bilkul muft!<br/>Neeche ➕ dabao':'Filter ya search badlo'}</div>${empty?`<button onclick="openPost()" style="margin-top:16px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);color:#fff;font-weight:700;font-size:13pxpx;padding:12px 24px;border-radius:12px;font-family:'Baloo 2',sans-serif;box-shadow:0 4px 18px rgba(255,107,26,.4)">➕ Pehli Ad Post Karo — Free</button>`:''}</div>`;
+    if($('load-more-wrap'))$('load-more-wrap').style.display='none';return;
+  }
+  const pageItems=items.slice(0,currentPage*itemsPerPage);
+  if($('listings-wrap'))$('listings-wrap').innerHTML=pageItems.map((l,i)=>{
+    const saved=savedIds.has(l.id);const disc=l.op&&l.op>l.p?Math.round((1-l.p/l.op)*100):0;
+    let mb='';
+    if(l.photos&&l.photos.length)mb=`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`;
+    else if(l.video)mb=`<video src="${l.video}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" muted playsinline></video><div style="position:absolute;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center"><div style="width:30px;height:30px;background:rgba(255,255,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="width:12px;height:12px"><polygon points="5,3 19,12 5,21" fill="#ff6b1a"/></svg></div></div>`;
+    else mb=`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${CSVG[l.cat]||CSVG.other}</div>`;
+    return `<div class="listing${l.featured?' featured':''}${l.sold?' sold-listing':''}" onclick="openDtl(${l.id})" style="animation-delay:${Math.min(i,.5)*.04}s">
+      ${l.featured?'<div style="position:absolute;top:6px;right:8px;font-size:13pxpx;z-index:2;filter:drop-shadow(0 0 5px rgba(255,215,64,.6))">👑</div>':''}
+      ${l.sold?'<div class="sold-overlay">SOLD</div>':''}
+      <div class="lst-inner">
+        <div class="lst-img" style="position:relative;overflow:hidden">
+          ${l.b?`<div class="lst-bdg" style="background:${BDGCLR[l.b]||'#ff6b1a'}">${l.b}</div>`:''}${mb}
+        </div>
+        <div class="lst-body">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div class="lst-title">${l.t}</div>
+            <button class="fav-btn" onclick="event.stopPropagation();toggleSave(${l.id},this)">${saved?'❤️':'🤍'}</button>
+          </div>
+          <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:2px">
+            <span class="lst-price">${fmt(l.p)}</span>
+            ${disc?`<span class="lst-orig">${fmt(l.op)}</span><span class="lst-off">-${disc}%</span>`:''}
+          </div>
+          <div class="lst-loc">📍 ${l.loc||'—'} · ${timeAgo(l.postedAt)}</div>
+          <div class="tags-row">
+            ${l.upi?'<span class="upi-t">💳 UPI</span>':''}${l.nego?'<span class="nego-t">🤝 Nego</span>':''}${l.video?'<span class="vid-t">▶ Video</span>':''}
+            ${l.cat==='other'&&l.otype?`<span style="background:rgba(155,89,182,.12);border:1px solid rgba(155,89,182,.3);border-radius:4px;padding:2px 6px;font-size:11pxpx;color:#c39bd3;font-weight:600">📝 ${l.otype}</span>`:''}
+            <span style="background:var(--card3);border:1px solid var(--bdr);border-radius:4px;padding:2px 6px;font-size:11pxpx;color:var(--txt3)">${l.cond==='New'?'✨ New':'🔧 Used'}</span>
+          </div>
+          <div class="lst-foot"><span style="font-size:11pxpx;color:var(--txt4)">${l.v?'✅ ':''}<span style="color:var(--or2);font-weight:600">${l.seller||'Seller'}</span></span><span style="font-size:11pxpx;color:var(--txt4)">👁 ${l.views||0}</span></div>
+        </div>
+      </div></div>`;
+  }).join('');
+  if($('load-more-wrap'))$('load-more-wrap').style.display=items.length>currentPage*itemsPerPage?'block':'none';
+}
+function loadMore(){currentPage++;const pageItems=filteredListings.slice(0,currentPage*itemsPerPage);if($('listings-wrap'))$('listings-wrap').innerHTML+=' ';renderListings();}
+
+// ═══════════════════════════════════════════
+// SAVE / FAVORITES
+// ═══════════════════════════════════════════
+function toggleSave(id,btn){
+  if(savedIds.has(id)){savedIds.delete(id);btn.textContent='🤍';toast('Saved se hata diya');}
+  else{savedIds.add(id);btn.textContent='❤️';toast('❤️ Saved!','success');addNotif('❤️','Item Saved','Aapne ek item save kiya');}
+  localStorage.setItem('ab_saved',JSON.stringify([...savedIds]));
+  if($('ps-saved'))$('ps-saved').textContent=savedIds.size;buildQStats();
+}
+function buildSaved(){
+  if(!$('saved-list'))return;
+  if(!savedIds.size){$('saved-list').innerHTML=`<div class="empty"><div class="empty-ico">❤️</div><div class="empty-h">Koi item saved nahi</div><div class="empty-s">Listings mein ❤️ tap karo</div></div>`;return;}
+  const items=LISTINGS.filter(l=>savedIds.has(l.id));
+  $('saved-list').innerHTML=items.map(l=>`<div class="sv-row" onclick="openDtl(${l.id})"><div class="sv-thumb">${l.photos&&l.photos.length?`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover"/>`:`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${CSVG[l.cat]||CSVG.other}</div>`}</div><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13pxpx;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.t}</div><div style="color:var(--or2);font-weight:800;font-size:13pxpx;margin-top:2px">${fmt(l.p)}</div><div style="color:var(--txt4);font-size:11pxpx;margin-top:1px">📍 ${l.loc||'—'}</div></div><button onclick="event.stopPropagation();toggleSave(${l.id},this);buildSaved()" style="background:none;font-size:19pxpx;color:var(--rd);padding:4px">❤️</button></div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// MY LISTINGS (with edit/delete/sold)
+// ═══════════════════════════════════════════
+function showMyListings(){
+  switchTab('home');
+  const items=LISTINGS.filter(l=>l.ownerPhone===user?.phone);
+  if(!items.length){toast('Aapki koi listing nahi — ad post karo!');return;}
+  if($('lst-count'))$('lst-count').textContent=items.length+' meri listings';
+  if($('listings-wrap'))$('listings-wrap').innerHTML=items.map((l,i)=>{
+    const disc=l.op&&l.op>l.p?Math.round((1-l.p/l.op)*100):0;
+    let mb=l.photos&&l.photos.length?`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${CSVG[l.cat]||CSVG.other}</div>`;
+    return `<div class="listing${l.sold?' sold-listing':''}" style="border-color:rgba(255,107,26,.25);animation-delay:${i*.04}s">
+      ${l.sold?'<div class="sold-overlay">SOLD ✓</div>':''}
+      <div class="lst-inner" onclick="openDtl(${l.id})">
+        <div class="lst-img" style="position:relative;overflow:hidden">${mb}</div>
+        <div class="lst-body">
+          <div class="lst-title">${l.t}</div>
+          <div style="display:flex;align-items:baseline;gap:2px"><span class="lst-price">${fmt(l.p)}</span>${disc?`<span class="lst-off">-${disc}%</span>`:''}</div>
+          <div class="lst-loc">📍 ${l.loc||'—'} · 👁 ${l.views||0} views</div>
+          <div class="tags-row"><span style="background:rgba(0,224,144,.1);border:1px solid rgba(0,224,144,.2);border-radius:4px;padding:2px 7px;font-size:11pxpx;color:var(--gr);font-weight:700">${l.sold?'✓ Sold':'🟢 Live'}</span>${l.video?'<span class="vid-t">▶ Video</span>':''}</div>
+          <div class="action-row">
+            <button class="act-btn edit-btn" onclick="event.stopPropagation();editListing(${l.id})">✏️ Edit</button>
+            ${!l.sold?`<button class="act-btn sold-btn" onclick="event.stopPropagation();markSold(${l.id})">✓ Sold</button>`:'<button class="act-btn" onclick="event.stopPropagation();unmarkSold('+l.id+')" style="color:var(--gr);border-color:rgba(0,224,144,.3);background:rgba(0,224,144,.07)">↩ Unsold</button>'}
+            <button class="act-btn" onclick="event.stopPropagation();deleteListing(${l.id})" style="color:var(--rd);border-color:rgba(255,68,102,.3);background:rgba(255,68,102,.07)">🗑️ Delete</button>
+          </div>
+        </div>
+      </div></div>`;
+  }).join('');
+  if($('load-more-wrap'))$('load-more-wrap').style.display='none';
+}
+
+function editListing(id){
+  const l=LISTINGS.find(x=>x.id===id);if(!l)return;
+  editingListingId=id;postCat=l.cat;cond=l.cond;postPhotos=[...(l.photos||[])];postVideo=l.video||null;
+  openPost();
+  if($('post-modal-title'))$('post-modal-title').textContent='✏️ Ad Edit Karo';
+  if($('post-submit-btn'))$('post-submit-btn').textContent='Changes Save Karo ✅';
+  setTimeout(()=>{
+    if($('pf-ti'))$('pf-ti').value=l.t;if($('pf-pi'))$('pf-pi').value=l.p;if($('pf-op'))$('pf-op').value=l.op||'';
+    if($('pf-vi'))$('pf-vi').value=l.loc;if($('pf-di'))$('pf-di').value=l.d||'';
+    if($('nego-tog'))$('nego-tog').checked=!!l.nego;if($('upi-tog'))$('upi-tog').checked=!!l.upi;if($('promo-tog'))$('promo-tog').checked=!!l.featured;
+    // Prefill otype for Other category
+    const otf=$('other-type-fld');if(otf)otf.style.display=l.cat==='other'?'block':'none';
+    if($('pf-otype'))$('pf-otype').value=l.otype||'';
+    ['new','used','refurb'].forEach(x=>{const b=$('c-'+x);if(b)b.classList.toggle('on',x.charAt(0).toUpperCase()+x.slice(1)===l.cond)});
+    buildPostCats();
+    // Show existing photos
+    const pg=$('photo-grid');if(pg){pg.innerHTML='';postPhotos.forEach((p,i)=>{const d=document.createElement('div');d.style.cssText='width:68px;height:68px;border-radius:9px;background:var(--card3);border:1px solid var(--bdr);position:relative;overflow:hidden;flex-shrink:0';d.innerHTML=`<img src="${p}" style="width:100%;height:100%;object-fit:cover"/>`;pg.appendChild(d);});}
+    if(l.video&&$('video-preview'))$('video-preview').innerHTML=`<video src="${l.video}" style="width:100%;max-height:120px;border-radius:9px" controls></video>`;
+  },100);
+}
+function markSold(id){
+  showConfirm('✅','Item Sold Mark Karein?','Is item ko "Sold" mark karo — listing hide ho jaegi','Haan, Sold Hua!','var(--gr)',()=>{
+    const l=LISTINGS.find(x=>x.id===id);if(!l)return;l.sold=true;sL();updateCounts();showMyListings();
+    addTxn('sold',l.t,l.p);
+    addNotif('✅','Item Sold!',l.t+' sold ho gaya!');toast('🎉 Item sold mark ho gaya!','success');
+    // Ask for review if chat exists
+    const c=CHATS.find(ch=>ch.listingId===id);if(c)setTimeout(()=>openReviewModal(l.seller,id),1000);
+  });
+}
+function unmarkSold(id){const l=LISTINGS.find(x=>x.id===id);if(!l)return;l.sold=false;sL();updateCounts();showMyListings();toast('Item wapas live ho gaya');}
+function deleteListing(id){
+  showConfirm('🗑️','Listing Delete?','Yeh action undo nahi ho sakti. Sab data delete ho jaega.','Delete Karo','var(--rd)',()=>{
+    LISTINGS=LISTINGS.filter(l=>l.id!==id);sL();updateCounts();buildCats();buildQStats();buildTicker();
+    showMyListings();toast('Listing delete ho gayi');
+  });
+}
+
+// ═══════════════════════════════════════════
+// DETAIL
+// ═══════════════════════════════════════════
+function openDtl(id){
+  const l=LISTINGS.find(x=>x.id===id);if(!l)return;
+  l.views=(l.views||0)+1;sL();addRV(id);
+  const disc=l.op&&l.op>l.p?Math.round((1-l.p/l.op)*100):0;
+  const allM=[...(l.photos||[])];const hv=!!l.video;
+  let mediaHtml='';
+  if(allM.length||hv){
+    const first=allM.length?`<img src="${allM[0]}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`:`<video src="${l.video}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" controls playsinline></video>`;
+    mediaHtml=`<div class="dtl-media" style="position:relative;min-height:210px">${first}</div>`;
+    if(allM.length>1||hv){
+      const thumbs=allM.map((p,i)=>`<div class="dtl-thumb${i===0?' on':''}" onclick="swDM('img','${p}',this)"><img src="${p}"/></div>`).join('');
+      const vt=hv?`<div class="dtl-thumb" onclick="swDM('vid','${l.video}',this)" style="position:relative"><video src="${l.video}" style="pointer-events:none"></video><div style="position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:13pxpx">▶</div></div>`:'';
+      mediaHtml+=`<div class="dtl-thumbs">${thumbs}${vt}</div>`;
+    }
+  } else mediaHtml=`<div class="dtl-media">${CSVG[l.cat]||CSVG.other}</div>`;
+  const revs=(REVIEWS[l.ownerPhone]||[]).slice(0,3).map(r=>`<div class="rv-card2"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px"><span style="font-weight:700;font-size:13pxpx">${r.reviewer}</span><span style="color:var(--gd);font-size:11pxpx">${'★'.repeat(r.rating)}</span></div><div style="color:var(--txt3);font-size:12pxpx;line-height:1.6">${r.text}</div><div style="color:var(--txt4);font-size:11pxpx;margin-top:4px">${timeAgo(r.ts)}</div></div>`).join('');
+  const isOwnListing=l.ownerPhone===user?.phone;
+  $('dtl-sheet').innerHTML=`<div style="padding:16px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:11px">
+      <button onclick="closeDtl()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:5px 12px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif">← Back</button>
+      <div style="display:flex;gap:6px">
+        <button onclick="toggleSave(${l.id},this)" style="background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:5px 9px;font-size:13pxpx">${savedIds.has(l.id)?'❤️':'🤍'}</button>
+        <button onclick="shareNative()" style="background:var(--card2);border:1px solid var(--bdr);border-radius:8px;padding:5px 11px;color:var(--txt3);font-size:12pxpx;font-family:'Baloo 2',sans-serif">🔗</button>
+      </div>
+    </div>
+    ${mediaHtml}
+    ${l.sold?'<div style="background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.3);border-radius:9px;padding:8px 12px;margin-bottom:9px;color:var(--rd);font-size:12pxpx;font-weight:700;text-align:center">✓ Yeh Item Sold Ho Gaya Hai</div>':''}
+    ${l.featured?'<div style="background:linear-gradient(135deg,rgba(255,215,64,.08),rgba(255,107,26,.05));border:1px solid rgba(255,215,64,.18);border-radius:9px;padding:6px 11px;margin-bottom:9px;color:var(--gd);font-size:11pxpx;font-weight:600">👑 Featured Listing</div>':''}
+    <div style="display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:4px">
+      <span style="font-size:24pxpx;font-weight:900;letter-spacing:-.5px">${fmt(l.p)}</span>
+      ${disc?`<span style="color:var(--txt4);font-size:13pxpx;text-decoration:line-through">${fmt(l.op)}</span><span style="background:var(--gr);color:#000;border-radius:5px;padding:2px 7px;font-size:11pxpx;font-weight:800">${disc}% OFF</span>`:''}
+    </div>
+    <div style="font-weight:700;font-size:13pxpx;margin-bottom:3px">${l.t}</div>
+    <div style="color:var(--txt3);font-size:11pxpx;margin-bottom:10px">📍 ${l.loc||'—'} · 👁 ${l.views} views · ${timeAgo(l.postedAt)} · ${l.cat==='other'&&l.otype?l.otype:CATS.find(c=>c.id===l.cat)?.l||'Item'}</div>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:11px">
+      ${l.upi?'<span style="background:rgba(0,224,144,.08);border:1px solid rgba(0,224,144,.2);border-radius:5px;padding:3px 9px;color:var(--gr);font-size:11pxpx;font-weight:700">💳 UPI</span>':''}
+      ${l.nego?'<span style="background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.2);border-radius:5px;padding:3px 9px;color:var(--or2);font-size:11pxpx;font-weight:700">🤝 Nego</span>':''}
+      ${l.video?'<span style="background:rgba(61,127,255,.1);border:1px solid rgba(61,127,255,.25);border-radius:5px;padding:3px 9px;color:var(--bl);font-size:11pxpx;font-weight:700">🎬 Video</span>':''}
+      ${l.v?'<span style="background:rgba(0,224,144,.08);border:1px solid rgba(0,224,144,.2);border-radius:5px;padding:3px 9px;color:var(--gr);font-size:11pxpx;font-weight:700">✅ Verified</span>':''}
+      <span style="background:var(--card2);border:1px solid var(--bdr);border-radius:5px;padding:3px 9px;color:var(--txt3);font-size:11pxpx">${l.cond==='New'?'✨ Naya':'🔧 Used'}</span>
+    </div>
+    <div class="sc">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div style="width:40px;height:40px;background:linear-gradient(135deg,#ff6b1a,#ff3d00);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15pxpx;font-weight:800;flex-shrink:0">${(l.seller||'S')[0].toUpperCase()}</div>
+        <div style="flex:1"><div style="font-weight:700;font-size:13pxpx">${l.seller||'Seller'}</div>
+          <div style="color:var(--txt3);font-size:11pxpx;margin-top:1px">${(REVIEWS[l.ownerPhone]||[]).length} reviews · Member since ${new Date(l.postedAt||Date.now()).getFullYear()}</div>
+        </div>
+        ${isOwnListing?'<span style="background:rgba(255,107,26,.1);border:1px solid rgba(255,107,26,.25);border-radius:6px;padding:3px 8px;font-size:11pxpx;color:var(--or2);font-weight:700">Mera Item</span>':''}
+      </div>
+    </div>
+    ${!l.sold&&l.nego&&!isOwnListing?`<div class="nego-box"><div style="color:var(--or2);font-weight:700;font-size:13pxpx">🤝 Price Negotiate Karo</div><div style="color:var(--txt4);font-size:11pxpx;margin-top:2px">Directly offer bhejo seller ko</div><div class="nego-inp-row"><input class="nego-inp" type="number" id="dtl-neg-${l.id}" placeholder="₹ Offer" value="${Math.round(l.p*.9)}"/><button class="nego-send" onclick="sendDN(${l.id})">Bhejo →</button></div><div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">${[.95,.9,.85].map(p=>`<button onclick="document.getElementById('dtl-neg-${l.id}').value=${Math.round(l.p*p)}" style="background:var(--card3);border:1px solid var(--bdr);border-radius:6px;padding:4px 10px;color:var(--txt3);font-size:11pxpx;font-weight:600;cursor:pointer;font-family:'Baloo 2',sans-serif">${fmt(Math.round(l.p*p))}</button>`).join('')}</div></div>`:''}
+    ${!l.sold&&!isOwnListing?`<div class="dtl-btns"><button class="btn-chat-d" onclick="closeDtl();startChat(${l.id})">💬 Chat Karo</button><button class="btn-call-d" onclick="initiateCallItem('${l.seller||'Seller'}')">📞 Call</button></div>
+    <button class="btn-wa" onclick="shareWA('${(l.t||'').replace(/'/g,"\\'")}',${l.p})">💬 WhatsApp Share</button>
+    ${l.upi?`<button onclick="openUPIPayment(${l.p},'${(l.seller||'Seller').replace(/'/g,"\\'")}',${l.id})" style="width:100%;background:linear-gradient(135deg,#00b87a,#00e090);border-radius:12px;padding:12px;color:#000;font-weight:800;font-size:13pxpx;font-family:'Baloo 2',sans-serif;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px;cursor:pointer">💳 UPI se Pay Karo — ${fmt(l.p)}</button>`:''}`:
+    isOwnListing?`<div style="display:flex;gap:7px;margin-bottom:7px"><button onclick="closeDtl();editListing(${l.id})" class="btn-chat-d">✏️ Edit Karo</button><button onclick="closeDtl();${l.sold?'unmarkSold':'markSold'}(${l.id})" class="btn-call-d">${l.sold?'↩ Unsold':'✓ Sold Mark'}</button></div>`:''}
+    ${l.d?`<div style="color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:.9px;margin:4px 0 7px">📋 Description</div><div style="color:var(--txt2);font-size:13pxpx;line-height:1.7;margin-bottom:14px">${l.d}</div>`:''}
+    ${revs?`<div style="color:var(--txt3);font-size:11pxpx;font-weight:700;text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px">⭐ Reviews (${(REVIEWS[l.ownerPhone]||[]).length})</div>${revs}
+    ${!isOwnListing?`<button onclick="openReviewModal('${(l.seller||'Seller').replace(/'/g,"\\'")}','${l.ownerPhone}')" style="width:100%;background:var(--card2);border:1px solid var(--bdr);border-radius:11px;padding:10px;color:var(--txt3);font-weight:600;font-size:12pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer;margin-top:4px">⭐ Review Do</button>`:''}`:
+    !isOwnListing?`<button onclick="openReviewModal('${(l.seller||'Seller').replace(/'/g,"\\'")}','${l.ownerPhone}')" style="width:100%;background:var(--card2);border:1px solid var(--bdr);border-radius:11px;padding:10px;color:var(--txt3);font-weight:600;font-size:12pxpx;font-family:'Baloo 2',sans-serif;cursor:pointer">⭐ Seller ko Review Do</button>`:''}
+    <div style="height:6px"></div>
+  </div>`;
+  $('dtl-modal').classList.add('open');
+}
+function swDM(type,src,thumb){document.querySelectorAll('.dtl-thumb').forEach(t=>t.classList.remove('on'));thumb.classList.add('on');const w=document.querySelector('.dtl-media');if(type==='img')w.innerHTML=`<img src="${src}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`;else w.innerHTML=`<video src="${src}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" controls autoplay playsinline></video>`;}
+function closeDtl(){$('dtl-modal').classList.remove('open')}
+function sendDN(lid){const amt=$(`dtl-neg-${lid}`).value;if(!amt){toast('Amount daalo','error');return;}toast(`🤝 ₹${Number(amt).toLocaleString()} offer bheja!`,'success');setTimeout(()=>{toast('📩 Seller ne dekha — reply aa raha hai...');addNotif('🤝','Nego Offer Bheja','₹'+Number(amt).toLocaleString()+' offer seller ko bheja');},2200);}
+function initiateCall(){if(!negoListing)return;toast('📞 Calling '+($('cd-name')?.textContent||'Seller')+'...');setTimeout(()=>toast('📵 Abhi available nahi — Message bhejo'),2000);}
+function initiateCallItem(name){toast('📞 Calling '+name+'...');setTimeout(()=>toast('📵 Abhi available nahi — Chat karein'),2000);}
+
+// ═══════════════════════════════════════════
+// UPI PAYMENT
+// ═══════════════════════════════════════════
+function openUPIPayment(amount,seller,lid){
+  $('upi-pay-amount').textContent=fmt(amount);
+  $('upi-pay-to').textContent='👤 '+seller+' ko payment';
+  $('upi-modal')._lid=lid;$('upi-modal')._amount=amount;$('upi-modal')._seller=seller;
+  $('upi-pay-form').style.display='block';$('upi-pay-success').style.display='none';
+  if($('upi-id-inp'))$('upi-id-inp').value='';
+  $('upi-modal').classList.add('open');closeDtl();
+}
+function processUPIPay(method){
+  const amount=$('upi-modal')._amount,seller=$('upi-modal')._seller;
+  if(method==='UPI ID'){const id=($('upi-id-inp').value||'').trim();if(!id||!id.includes('@')){toast('Valid UPI ID daalo (e.g. name@upi)','error');return;}}
+  $('upi-pay-form').style.display='none';$('upi-pay-success').style.display='block';
+  $('upi-success-msg').textContent=fmt(amount)+' '+seller+' ko '+method+' se bheja';
+  addNotif('💳','Payment Successful!',fmt(amount)+' '+seller+' ko bheja via '+method);
+  toast('✅ Payment successful!','success');
+}
+
+// ═══════════════════════════════════════════
+// REVIEWS
+// ═══════════════════════════════════════════
+let reviewTargetPhone='',reviewTargetName='';
+function openReviewModal(sellerName,sellerPhone){
+  reviewTargetName=sellerName;reviewTargetPhone=sellerPhone||sellerName;
+  currentRating=0;
+  if($('review-seller-name'))$('review-seller-name').textContent=sellerName+' ko rate karo';
+  if($('review-txt'))$('review-txt').value='';
+  if($('star-label'))$('star-label').textContent='Tap karo rating dene ke liye';
+  document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  $('review-modal').classList.add('open');
+}
+function setRating(r){
+  currentRating=r;
+  const labels=['','Bahut Kharab 😞','Theek Nahi 😕','Theek Hai 😐','Badhiya! 😊','Ekdum Zabardast! 🤩'];
+  if($('star-label'))$('star-label').textContent=labels[r];
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<r));
+}
+function submitReview(){
+  if(!currentRating){toast('Rating dena zaroori hai ⭐','error');return;}
+  const txt=($('review-txt').value||'').trim();
+  if(!REVIEWS[reviewTargetPhone])REVIEWS[reviewTargetPhone]=[];
+  REVIEWS[reviewTargetPhone].push({reviewer:user?.name||'Anonymous',rating:currentRating,text:txt||'',ts:Date.now()});
+  sR();
+  $('review-modal').classList.remove('open');
+  toast('✅ Review submit ho gayi! Shukriya','success');
+  addNotif('⭐','Review Mila!',user?.name+' ne '+currentRating+'★ diya');
+}
+
+// ═══════════════════════════════════════════
+// CHAT
+// ═══════════════════════════════════════════
+function buildChats(){
+  updateCounts();
+  if(!$('chat-list'))return;
+  if(!CHATS.length){$('chat-list').innerHTML=`<div class="empty"><div class="empty-ico">💬</div><div class="empty-h">Koi chat nahi</div><div class="empty-s">Kisi listing par "Chat Karo" dabao</div></div>`;return;}
+  $('chat-list').innerHTML=CHATS.map((c,i)=>`<div class="chat-item" onclick="openChat(${c.id})" style="animation-delay:${i*.05}s"><div class="ch-av">${(c.name||'S')[0].toUpperCase()}${c.online?'<div class="ch-on"></div>':''}</div><div style="flex:1;min-width:0"><div class="ch-name">${c.name}</div><div class="ch-prev">${c.prev||'Chat shuru karo...'}</div></div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;margin-left:auto"><span class="ch-time">${c.time||'Abhi'}</span>${c.unread?`<span class="ch-unrd">${c.unread}</span>`:''}</div></div>`).join('');
+}
+function startChat(lid){
+  const l=LISTINGS.find(x=>x.id===lid);if(!l)return;
+  let c=CHATS.find(x=>x.listingId===lid);
+  if(!c){c={id:Date.now(),name:l.seller||'Seller',prev:'',time:'Abhi',unread:0,online:Math.random()>.3,listingId:lid,msgs:[]};CHATS.push(c);sC();}
+  switchTab('chat');setTimeout(()=>openChat(c.id),120);
+}
+function openChat(id){
+  const c=CHATS.find(x=>x.id===id);if(!c)return;
+  activeChatId=id;negoListing=LISTINGS.find(l=>l.id===c.listingId);
+  $('cd-av').textContent=(c.name||'S')[0].toUpperCase();
+  $('cd-name').textContent=c.name;
+  if($('cd-status'))$('cd-status').textContent=c.online?'🟢 Online':'⚫ Offline';
+  if(negoListing&&$('chat-item-strip')){
+    $('chat-item-strip').innerHTML=`<div style="width:34px;height:34px;background:var(--card3);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">${negoListing.photos&&negoListing.photos.length?`<img src="${negoListing.photos[0]}" style="width:100%;height:100%;object-fit:cover"/>`:`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${CSVG[negoListing.cat]||CSVG.other}</div>`}</div><div style="flex:1;min-width:0"><div style="font-size:11pxpx;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${negoListing.t}</div><div style="color:var(--or2);font-weight:800;font-size:12pxpx">${fmt(negoListing.p)}</div></div><span style="color:var(--txt4)">›</span>`;
+    $('chat-item-strip').onclick=()=>openDtl(negoListing.id);
+  }
+  const msgs=$('cd-msgs');
+  msgs.innerHTML=c.msgs.length?c.msgs.map(m=>renderMsg(m)).join(''):`<div style="text-align:center;padding:28px 14px;color:var(--txt4);font-size:12pxpx">Chat shuru karo! 👋</div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  c.unread=0;sC();buildChats();
+  $('chat-detail').classList.add('open');
+  // Mark messages as read after 1 sec
+  setTimeout(()=>{c.msgs.filter(m=>!m.me&&!m.read).forEach(m=>m.read=true);sC();},1000);
+}
+function renderMsg(m){
+  if(m.type==='image')return`<div style="display:flex;flex-direction:column"><div class="${m.me?'chat-img-preview':'chat-img-preview'}" style="align-self:${m.me?'flex-end':'flex-start'};max-width:200px;border-radius:12px;overflow:hidden;cursor:pointer" onclick="viewFullImg('${m.src}')"><img src="${m.src}" style="width:100%;display:block"/></div><div class="mt${m.me?' r':''}">${m.t}${m.me?`<span class="read-tick">${m.read?'✓✓':'✓'}</span>`:''}</div></div>`;
+  return`<div style="display:flex;flex-direction:column"><div class="mbub ${m.me?'mme':'mthm'}">${m.txt}</div><div class="mt${m.me?' r':''}">${m.t}${m.me?`<span class="read-tick">${m.read?'✓✓':'✓'}</span>`:''}</div></div>`;
+}
+function viewFullImg(src){const ov=document.createElement('div');ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;display:flex;align-items:center;justify-content:center;cursor:pointer';ov.innerHTML=`<img src="${src}" style="max-width:95%;max-height:95%;border-radius:10px"/>`;ov.onclick=()=>ov.remove();document.getElementById('app').appendChild(ov);}
+function closeChatDetail(){$('chat-detail').classList.remove('open');activeChatId=null;negoListing=null;}
+function sendMsg(){
+  const inp=$('cd-inp'),txt=inp.value.trim();if(!txt||activeChatId===null)return;
+  const c=CHATS.find(x=>x.id===activeChatId);if(!c)return;
+  const now=new Date();const t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  const msg={me:true,txt,t,read:false};c.msgs.push(msg);c.prev=txt;c.time=t;inp.value='';
+  const msgs=$('cd-msgs');
+  msgs.innerHTML+=renderMsg(msg);msgs.scrollTop=msgs.scrollHeight;sC();
+  const tid='ty-'+Date.now();
+  msgs.innerHTML+=`<div id="${tid}" style="display:flex;flex-direction:column"><div class="ty-wrap"><div class="ty-d"></div><div class="ty-d"></div><div class="ty-d"></div></div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    const te=document.getElementById(tid);if(te)te.remove();
+    const rep=['Theek hai!','Thodi discount doge?','Deal! Kab milna hai?','Price firm hai?','Cash mein?','Ok bhai confirm karo','Photo aur bhejo na','Address kya hai?'];
+    const r=rep[Math.floor(Math.random()*rep.length)];
+    const rm={me:false,txt:r,t,read:false};c.msgs.push(rm);c.unread=0;sC();
+    msgs.innerHTML+=renderMsg(rm);msgs.scrollTop=msgs.scrollHeight;
+    addNotif('💬',c.name+' ka Reply',r);
+  },800+Math.random()*600);
+}
+function attachChatImage(){document.getElementById('chat-img-inp').click();}
+function sendChatImage(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=async e=>{
+    const compressed=await compressImage(e.target.result,600,0.7);
+    const c=CHATS.find(x=>x.id===activeChatId);if(!c)return;
+    const now=new Date();const t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    const msg={me:true,type:'image',src:compressed,t,read:false};c.msgs.push(msg);c.prev='📷 Photo';c.time=t;sC();
+    const msgs=$('cd-msgs');msgs.innerHTML+=renderMsg(msg);msgs.scrollTop=msgs.scrollHeight;
+    toast('📷 Photo bheja!','success');
+    inp.value='';
+  };r.readAsDataURL(f);
+}
+function openNegoModal(){
+  if(!negoListing){toast('Pehle kisi listing ki chat kholein');return;}
+  $('nego-amt').value=Math.round(negoListing.p*.9);
+  $('nego-sugg-row').innerHTML=[.95,.9,.85,.8].map(p=>`<button class="nsugg" onclick="$('nego-amt').value=${Math.round(negoListing.p*p)}">${fmt(Math.round(negoListing.p*p))}</button>`).join('');
+  $('nego-modal').classList.add('open');
+}
+function sendNegoOffer(){
+  const amt=$('nego-amt').value,msg=$('nego-msg').value;if(!amt){toast('Amount daalo','error');return;}
+  $('nego-modal').classList.remove('open');
+  const c=CHATS.find(x=>x.id===activeChatId);if(!c)return;
+  const now=new Date();const t=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  const msgs=$('cd-msgs');
+  msgs.innerHTML+=`<div style="display:flex;flex-direction:column"><div class="ngbub"><div style="color:var(--or2);font-weight:700;font-size:11pxpx;margin-bottom:2px">🤝 Price Offer</div><div style="font-weight:900;font-size:19pxpx">${fmt(Number(amt))}</div>${msg?`<div style="color:var(--txt3);font-size:11pxpx;margin-top:3px">"${msg}"</div>`:''}</div><div class="mt r">${t} ✓</div></div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  c.msgs.push({me:true,txt:`🤝 Offer: ${fmt(Number(amt))}${msg?' — '+msg:''}`,t,read:false});sC();
+  toast(`🤝 ₹${Number(amt).toLocaleString()} offer bheja!`,'success');
+  addNotif('🤝','Price Offer Bheja','₹'+Number(amt).toLocaleString()+' ka offer '+c.name+' ko bheja');
+  setTimeout(()=>{
+    const rep=[`${fmt(Math.round(Number(amt)*1.05))} mein final?`,'Hmm sochta hoon...','Deal! Kal milte hain 🎉','Itna nahi hoga yaar','Counter: '+fmt(Math.round(Number(amt)*1.1))];
+    const r=rep[Math.floor(Math.random()*rep.length)];
+    msgs.innerHTML+=`<div style="display:flex;flex-direction:column"><div class="ngbub" style="align-self:flex-start;background:rgba(0,224,144,.07);border-color:rgba(0,224,144,.25)"><div style="color:var(--gr);font-weight:700;font-size:11pxpx;margin-bottom:2px">💬 Seller Reply</div><div style="font-size:13pxpx;margin-top:2px">${r}</div><div class="nb-acts"><button class="nb-acc" onclick="(function(btn){const ch=CHATS.find(x=>x.id===activeChatId);addTxn('deal',ch?ch.name:'Item',${amt});addNotif('🎉','Deal Ho Gaya!','₹${Number(amt).toLocaleString()} mein deal pakki!');toast('Deal pakki! 🎉','success');btn.closest('.ngbub').innerHTML='<b style=color:var(--gr)>✅ Deal Done!</b>'})(this)">Accept ✓</button><button class="nb-rej" onclick="toast('Counter bhejo');this.closest('[style]').remove()">Counter</button></div></div><div class="mt">${t}</div></div>`;
+    msgs.scrollTop=msgs.scrollHeight;addNotif('🤝','Seller ne Reply Kiya',r);
+  },1500);
+}
+
+// ═══════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════
+function buildNotifPanel(){
+  if(!$('notif-list'))return;
+  if(!NOTIFS.length){$('notif-list').innerHTML=`<div style="text-align:center;padding:44px 20px;color:var(--txt4)"><div style="font-size:36pxpx;margin-bottom:8px">🔔</div><div style="font-size:13pxpx;font-weight:600">Koi notification nahi</div></div>`;return;}
+  $('notif-list').innerHTML=NOTIFS.map(n=>`<div class="nitem${n.unread?' unread':''}" onclick="markRead(${n.id})"><div class="nitem-ico">${n.ico}</div><div style="flex:1"><div style="font-weight:700;font-size:13pxpx;margin-bottom:2px">${n.title}</div><div style="color:var(--txt3);font-size:11pxpx;line-height:1.5">${n.body}</div><div style="color:var(--txt4);font-size:11pxpx;margin-top:4px">${timeAgo(n.time)}</div></div>${n.unread?'<div class="n-dot"></div>':''}</div>`).join('');
+}
+function markRead(id){const n=NOTIFS.find(x=>x.id===id);if(n)n.unread=false;sN();buildNotifPanel();updateNotifDot();}
+function markAllRead(){NOTIFS.forEach(n=>n.unread=false);sN();buildNotifPanel();updateNotifDot();toast('Sab notifications read ✓');}
+function openNotifs(){buildNotifPanel();$('notif-panel').classList.add('open');}
+function closeNotifs(){$('notif-panel').classList.remove('open')}
+
+// ═══════════════════════════════════════════
+// POST AD
+// ═══════════════════════════════════════════
+function openPost(){
+  if(!editingListingId){
+    $('post-form').style.display='block';$('post-success').style.display='none';
+    $('post-modal').classList.add('open');
+    if($('post-modal-title'))$('post-modal-title').textContent='📸 Ad Post Karo';
+    if($('post-submit-btn'))$('post-submit-btn').textContent='Ad Post Karo — Bilkul Free 🚀';
+    buildPostCats();postPhotos=[];postVideo=null;
+    $('photo-grid').innerHTML='';if($('video-preview'))$('video-preview').innerHTML='';
+    mediaMode='photo';$('photo-zone').style.display='block';$('video-zone').style.display='none';
+    $('mt-photo').classList.add('on');$('mt-video').classList.remove('on');
+    ['pf-ti','pf-pi','pf-op','pf-vi','pf-di','pf-otype'].forEach(id=>{const e=$(id);if(e)e.value='';});
+    const otf=$('other-type-fld');if(otf)otf.style.display='none';
+    if($('nego-tog'))$('nego-tog').checked=false;if($('upi-tog'))$('upi-tog').checked=true;if($('promo-tog'))$('promo-tog').checked=false;
+    setCond('Used');
+    // Auto-fill location
+    if($('pf-vi')&&user?.city)$('pf-vi').value=user.city;
+  } else {
+    $('post-form').style.display='block';$('post-success').style.display='none';
+    $('post-modal').classList.add('open');
+  }
+}
+function closePost(){$('post-modal').classList.remove('open');editingListingId=null;}
+function switchMT(m){mediaMode=m;$('mt-photo').classList.toggle('on',m==='photo');$('mt-video').classList.toggle('on',m==='video');$('photo-zone').style.display=m==='photo'?'block':'none';$('video-zone').style.display=m==='video'?'block':'none';}
+function buildPostCats(){
+  if(!$('post-cats'))return;
+  $('post-cats').innerHTML=CATS.filter(c=>c.id!=='all').map(c=>`<button class="pcat${c.id===postCat?' on':''}" onclick="setPCat('${c.id}')">${CSVG[c.id]||CSVG.other} ${c.l}</button>`).join('');
+}
+function setPCat(id){postCat=id;buildPostCats();const f=$('other-type-fld');if(f)f.style.display=id==='other'?'block':'none';}
+function setCond(c){cond=c;['new','used','refurb'].forEach(x=>{const b=$('c-'+x);if(b)b.classList.toggle('on',x.charAt(0).toUpperCase()+x.slice(1)===c)});}
+async function handlePhotos(inp){
+  const files=[...inp.files].slice(0,6-postPhotos.length);
+  for(const f of files){
+    const r=new FileReader();
+    await new Promise(res=>{r.onload=async e=>{const compressed=await compressImage(e.target.result,800,0.75);postPhotos.push(compressed);const d=document.createElement('div');d.style.cssText='width:68px;height:68px;border-radius:9px;background:var(--card3);border:1px solid var(--bdr);position:relative;overflow:hidden;flex-shrink:0';d.innerHTML=`<img src="${compressed}" style="width:100%;height:100%;object-fit:cover"/><button onclick="this.parentElement.remove()" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:16px;height:16px;font-size:11pxpx;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>`;$('photo-grid').appendChild(d);res();};r.readAsDataURL(f);});
+  }
+  if(files.length)toast('📸 '+(postPhotos.length)+' photos ready','success');
+}
+function handleVideo(inp){
+  const f=inp.files[0];if(!f)return;
+  if(f.size>80*1024*1024){toast('Video 80MB se badi hai','error');return;}
+  toast('🎬 Loading...');
+  const r=new FileReader();
+  r.onload=e=>{postVideo=e.target.result;if($('video-preview'))$('video-preview').innerHTML=`<div style="border-radius:11px;overflow:hidden;background:var(--card3);position:relative"><video src="${postVideo}" style="width:100%;max-height:170px;object-fit:cover;display:block" controls playsinline></video><button onclick="postVideo=null;$('video-preview').innerHTML='';$('vid-inp').value=''" style="position:absolute;top:7px;right:7px;background:rgba(0,0,0,.7);border:none;border-radius:50%;width:26px;height:26px;font-size:12pxpx;color:#fff;cursor:pointer">✕</button></div><div style="color:var(--gr);font-size:11pxpx;font-weight:600;margin-top:5px">✅ Video ready!</div>`;toast('🎬 Video ready!','success');};
+  r.readAsDataURL(f);
+}
+function submitPost(){
+  const ti=($('pf-ti').value||'').trim(),pi=$('pf-pi').value,vi=($('pf-vi').value||'').trim();
+  if(!ti){$('pf-ti').classList.add('shake');setTimeout(()=>$('pf-ti').classList.remove('shake'),500);toast('Title daalo','error');return;}
+  if(!pi){toast('Price daalo','error');return;}
+  const op=parseFloat($('pf-op').value)||null;
+  const otype=postCat==='other'?($('pf-otype').value||'').trim():'';
+  if(postCat==='other'&&!otype){toast('Product ka naam daalo','error');$('pf-otype').classList.add('shake');setTimeout(()=>$('pf-otype').classList.remove('shake'),500);return;}
+  if(editingListingId){
+    const l=LISTINGS.find(x=>x.id===editingListingId);
+    if(l){l.t=ti;l.p=Number(pi);l.op=op;l.loc=vi||user?.city||'India';l.cond=cond;l.d=($('pf-di').value||'').trim();l.nego=!!$('nego-tog').checked;l.upi=!!$('upi-tog').checked;l.featured=!!$('promo-tog').checked;l.cat=postCat;l.otype=otype;if(postPhotos.length)l.photos=postPhotos;if(postVideo)l.video=postVideo;}
+    sL();editingListingId=null;closePost();renderListings();buildCats();buildTicker();updateCounts();toast('✅ Listing update ho gayi!','success');return;
+  }
+  const nl={id:nextId++,cat:postCat,t:ti,p:Number(pi),op,loc:vi||user?.city||'India',b:'',seller:user?.name||'Seller',ownerPhone:user?.phone,v:false,upi:!!$('upi-tog').checked,nego:!!$('nego-tog').checked,featured:!!$('promo-tog').checked,views:0,cond,d:($('pf-di').value||'').trim(),photos:postPhotos.length?[...postPhotos]:[],video:postVideo||null,tags:[],otype,postedAt:Date.now(),sold:false};
+  LISTINGS.unshift(nl);sL();updateCounts();buildCats();buildQStats();buildTicker();currentPage=1;
+  $('post-form').style.display='none';$('post-success').style.display='block';
+  toast('🎉 Ad live ho gayi!','success');
+  addNotif('📦','Nai Listing Live!',ti+' — '+fmt(Number(pi)));
+}
+
+// ═══════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════
+function buildMapDots(){
+  if(!$('map-dots-g'))return;
+  $('map-dots-g').innerHTML=CDOTS.map(c=>`<g onclick="mapTap('${c.n}')" style="cursor:pointer"><circle cx="${c.x}" cy="${c.y}" r="4.5" fill="${c.c}" opacity=".17"/><circle cx="${c.x}" cy="${c.y}" r="2.3" fill="${c.c}" opacity=".9"/><text x="${c.x}" y="${c.y-4}" text-anchor="middle" font-size="2.8" fill="#ffffffaa" font-family="sans-serif">${c.n}</text></g>`).join('');
+}
+function mapTap(city){
+  $('map-city-lbl').textContent='📍 '+city;
+  const items=LISTINGS.filter(l=>!l.sold&&(l.loc||'').toLowerCase().includes(city.toLowerCase()));
+  $('map-city-items').innerHTML=items.length?items.map(l=>`<div style="background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:9px;margin-bottom:6px;display:flex;gap:9px;cursor:pointer" onclick="closeMap();openDtl(${l.id})"><div style="width:34px;height:34px;background:var(--card3);border-radius:7px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${l.photos&&l.photos.length?`<img src="${l.photos[0]}" style="width:100%;height:100%;object-fit:cover"/>`:`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${CSVG[l.cat]||CSVG.other}</div>`}</div><div><div style="font-size:11pxpx;font-weight:600">${l.t}</div><div style="color:var(--or2);font-weight:800;font-size:12pxpx">${fmt(l.p)}</div></div></div>`).join(''):`<div style="color:var(--txt4);font-size:12pxpx">Is shehar mein koi listing nahi</div>`;
+}
+function openMap(){buildMapDots();$('map-ov').style.display='flex';}
+function closeMap(){$('map-ov').style.display='none';}
+
+// ═══════════════════════════════════════════
+// TICKER
+// ═══════════════════════════════════════════
+function buildTicker(){
+  if(!$('ticker'))return;
+  const items=LISTINGS.filter(l=>!l.sold).length?LISTINGS.filter(l=>!l.sold).slice(0,8).map(l=>({tag:l.featured?'TOP':l.cond==='New'?'NEW':'ITEM',txt:`${l.t} — ${fmt(l.p)}`})):[{tag:'FREE',txt:'Apna pehla item becho!'},{tag:'EASY',txt:'Photo lo, price daalo!'},{tag:'UPI',txt:'Safe UPI payment'},{tag:'CHAT',txt:'Buyers se seedha baat'}];
+  const all=[...items,...items];
+  $('ticker').innerHTML=all.map(i=>`<div class="tkrt"><span class="tktag${i.tag!=='TOP'?' g':''}">${i.tag}</span><span>${i.txt}</span></div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// VOICE SEARCH
+// ═══════════════════════════════════════════
+function startVoice(){
+  if(!window.SpeechRecognition&&!window.webkitSpeechRecognition){toast('Voice supported nahi hai');return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const sr=new SR();sr.lang='hi-IN';sr.start();toast('🎤 Bolo...');
+  sr.onresult=e=>{const q=e.results[0][0].transcript;$('srch').value=q;renderListings();saveSearch(q);toast('🔍 "'+q+'"');};
+  sr.onerror=()=>toast('Voice error, dobara try karo');
+}
+
+// ═══════════════════════════════════════════
+// SHARE
+// ═══════════════════════════════════════════
+function shareWA(title,price){const t=title||'Apna Bazar pe meri listing!';const p=price?` — ${fmt(price)}`:'';window.open(`https://wa.me/?text=${encodeURIComponent(t+p+'\nhttps://apnabazar.in')}`,'_blank');}
+function shareNative(){if(navigator.share)navigator.share({title:'Apna Bazar',text:'India Ka Local Marketplace',url:'https://apnabazar.in'}).catch(()=>{});else{navigator.clipboard&&navigator.clipboard.writeText('https://apnabazar.in');toast('🔗 Link copy ho gaya!');}}
+
+// ═══════════════════════════════════════════
+// EDIT PROFILE
+// ═══════════════════════════════════════════
+let epRole='buyer';
+function openEditProfile(){
+  if($('ep-name'))$('ep-name').value=user?.name||'';
+  if($('ep-city'))$('ep-city').value=user?.city||'';
+  epRole=user?.role||'buyer';
+  const buyer=$('ep-buyer'),seller=$('ep-seller');
+  if(buyer)buyer.style.opacity=epRole==='buyer'?'1':'.45';
+  if(seller)seller.style.opacity=epRole==='seller'?'1':'.45';
+  $('edit-profile-modal').classList.add('open');
+}
+function saveEditProfile(){
+  const name=($('ep-name').value||'').trim();
+  const city=($('ep-city').value||'').trim();
+  if(!name){toast('Naam daalo','error');return;}
+  user.name=name;user.city=city||user.city;user.role=epRole;
+  localStorage.setItem('ab_user',JSON.stringify(user));
+  $('edit-profile-modal').classList.remove('open');
+  buildProfile();toast('✅ Profile update ho gai!','success');
+}
+
+// ═══════════════════════════════════════════
+// TRANSACTION HISTORY
+// ═══════════════════════════════════════════
+let TRANSACTIONS=JSON.parse(localStorage.getItem('ab_txns')||'[]');
+function saveTxns(){localStorage.setItem('ab_txns',JSON.stringify(TRANSACTIONS));}
+function addTxn(type,itemName,amount){
+  TRANSACTIONS.unshift({id:Date.now(),type,itemName,amount,time:Date.now()});
+  if(TRANSACTIONS.length>100)TRANSACTIONS=TRANSACTIONS.slice(0,100);
+  saveTxns();
+}
+function openTransactions(){
+  const m=$('txn-modal');
+  const list=$('txn-list');
+  if(!list)return;
+  if(!TRANSACTIONS.length){
+    list.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--txt4)"><div style="font-size:36pxpx;margin-bottom:8px">💰</div><div style="font-size:13pxpx;font-weight:600">Abhi koi transaction nahi</div><div style="font-size:11pxpx;margin-top:4px">Item becho ya deal karo</div></div>`;
+  } else {
+    list.innerHTML=TRANSACTIONS.map(t=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr)">
+        <div style="width:38px;height:38px;border-radius:10px;background:${t.type==='sold'?'rgba(0,224,144,.12)':'rgba(255,107,26,.12)'};display:flex;align-items:center;justify-content:center;font-size:18pxpx;flex-shrink:0">${t.type==='sold'?'✅':'🤝'}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13pxpx">${t.itemName}</div>
+          <div style="color:var(--txt4);font-size:11pxpx;margin-top:2px">${t.type==='sold'?'Sold':'Deal'} • ${timeAgo(t.time)}</div>
+        </div>
+        <div style="font-weight:800;font-size:13pxpx;color:${t.type==='sold'?'var(--gr)':'var(--or2)'}">₹${Number(t.amount).toLocaleString('en-IN')}</div>
+      </div>
+    `).join('');
+  }
+  m.classList.add('open');
+}
+
+// ═══════════════════════════════════════════
+// CAMERA CAPTURE
+// ═══════════════════════════════════════════
+function openCamera(){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';inp.capture='environment';
+  inp.onchange=e=>handlePhotos(e.target);
+  inp.click();
+}
+
+// ═══════════════════════════════════════════
+// LANGUAGE SYSTEM — 11 INDIAN LANGUAGES
+// ═══════════════════════════════════════════
+const LANGS=[
+  {code:'hi',name:'हिंदी',eng:'Hindi',flag:'🇮🇳',script:'Devanagari'},
+  {code:'en',name:'English',eng:'English',flag:'🇬🇧',script:'Latin'},
+  {code:'pa',name:'ਪੰਜਾਬੀ',eng:'Punjabi',flag:'🇮🇳',script:'Gurmukhi'},
+  {code:'bn',name:'বাংলা',eng:'Bengali',flag:'🇮🇳',script:'Bengali'},
+  {code:'mr',name:'मराठी',eng:'Marathi',flag:'🇮🇳',script:'Devanagari'},
+  {code:'gu',name:'ગુજરાતી',eng:'Gujarati',flag:'🇮🇳',script:'Gujarati'},
+  {code:'ta',name:'தமிழ்',eng:'Tamil',flag:'🇮🇳',script:'Tamil'},
+  {code:'te',name:'తెలుగు',eng:'Telugu',flag:'🇮🇳',script:'Telugu'},
+  {code:'kn',name:'ಕನ್ನಡ',eng:'Kannada',flag:'🇮🇳',script:'Kannada'},
+  {code:'ml',name:'മലയാളം',eng:'Malayalam',flag:'🇮🇳',script:'Malayalam'},
+  {code:'ur',name:'اردو',eng:'Urdu',flag:'🇮🇳',script:'Nastaliq'},
+];
+
+const T={
+  hi:{
+    appName:'अपना बाज़ार',appSub:'भारत का भरोसेमंद मार्केटप्लेस 🇮🇳',
+    search:'खोजें — गाड़ी, मोबाइल, फर्नीचर...',
+    sell:'बेचो',home:'घर',saved:'सेव्ड',chat:'बात',profile:'मेरा',
+    post:'Ad पोस्ट करो',postBtn:'Ad पोस्ट करो — बिल्कुल Free 🚀',
+    noListings:'कोई listing नहीं मिली',noListingsSub:'Filter बदलें या नई listing जोड़ें',
+    buyer:'Buyer',seller:'Seller',buyerSub:'खरीदना चाहता हूँ',sellerSub:'बेचना चाहता हूँ',
+    otpSend:'📱 OTP भेजो & शुरू करो',otpVerify:'✅ Verify करो & Login',
+    name:'अपना नाम',phone:'मोबाइल नंबर',city:'शहर / गाँव',
+    langChange:'भाषा बदलें',settings:'Settings',logout:'🚪 Logout',
+    myListings:'मेरी Listings',savedItems:'सेव्ड Items',messages:'Messages',
+    transactions:'Transaction History',location:'Location Update',
+    notifications:'Notifications',filters:'Search Filters',install:'App Install करो',
+    upi:'UPI ID सेट करो',privacy:'Privacy & Safety',clearData:'सब Data Clear करो',
+    title:'Title *',price:'कीमत (₹) *',origPrice:'असली कीमत ₹',
+    desc:'विवरण',condition:'हालत',negotiate:'Negotiate हो सकता है?',
+    upiAccept:'UPI Accept करें?',featured:'Featured Ad — ₹99',
+    new:'✨ नया',used:'🔧 पुराना',refurb:'💎 Refurb',
+    category:'Category *',location2:'Location *',
+    saveProfile:'Save करो 💾',editProfile:'✏️ Profile Edit करो',
+    langTitle:'भाषा चुनें',
+  },
+  en:{
+    appName:'Apna Bazar',appSub:"India's Trusted Marketplace 🇮🇳",
+    search:'Search — Cars, Mobiles, Furniture...',
+    sell:'Sell',home:'Home',saved:'Saved',chat:'Chat',profile:'Me',
+    post:'Post Ad',postBtn:'Post Ad — Absolutely Free 🚀',
+    noListings:'No listings found',noListingsSub:'Change filters or add a new listing',
+    buyer:'Buyer',seller:'Seller',buyerSub:'I want to buy',sellerSub:'I want to sell',
+    otpSend:'📱 Send OTP & Start',otpVerify:'✅ Verify & Login',
+    name:'Your Name',phone:'Mobile Number',city:'City / Village',
+    langChange:'Change Language',settings:'Settings',logout:'🚪 Logout',
+    myListings:'My Listings',savedItems:'Saved Items',messages:'Messages',
+    transactions:'Transaction History',location:'Update Location',
+    notifications:'Notifications',filters:'Search Filters',install:'Install App',
+    upi:'Set UPI ID',privacy:'Privacy & Safety',clearData:'Clear All Data',
+    title:'Title *',price:'Price (₹) *',origPrice:'Original Price ₹',
+    desc:'Description',condition:'Condition',negotiate:'Negotiable?',
+    upiAccept:'Accept UPI?',featured:'Featured Ad — ₹99',
+    new:'✨ New',used:'🔧 Used',refurb:'💎 Refurb',
+    category:'Category *',location2:'Location *',
+    saveProfile:'Save 💾',editProfile:'✏️ Edit Profile',
+    langTitle:'Choose Language',
+  },
+  pa:{
+    appName:'ਆਪਣਾ ਬਾਜ਼ਾਰ',appSub:'ਭਾਰਤ ਦਾ ਭਰੋਸੇਮੰਦ ਮਾਰਕੀਟਪਲੇਸ 🇮🇳',
+    search:'ਖੋਜੋ — ਗੱਡੀ, ਮੋਬਾਈਲ, ਫਰਨੀਚਰ...',
+    sell:'ਵੇਚੋ',home:'ਘਰ',saved:'ਸੇਵਡ',chat:'ਗੱਲ',profile:'ਮੇਰਾ',
+    post:'Ad ਪੋਸਟ ਕਰੋ',postBtn:'Ad ਪੋਸਟ ਕਰੋ — ਬਿਲਕੁਲ ਮੁਫ਼ਤ 🚀',
+    noListings:'ਕੋਈ listing ਨਹੀਂ ਮਿਲੀ',noListingsSub:'Filter ਬਦਲੋ ਜਾਂ ਨਵੀਂ listing ਜੋੜੋ',
+    buyer:'ਖਰੀਦਦਾਰ',seller:'ਵੇਚਣ ਵਾਲਾ',buyerSub:'ਖਰੀਦਣਾ ਚਾਹੁੰਦਾ ਹਾਂ',sellerSub:'ਵੇਚਣਾ ਚਾਹੁੰਦਾ ਹਾਂ',
+    otpSend:'📱 OTP ਭੇਜੋ & ਸ਼ੁਰੂ ਕਰੋ',otpVerify:'✅ Verify ਕਰੋ & Login',
+    name:'ਆਪਣਾ ਨਾਮ',phone:'ਮੋਬਾਈਲ ਨੰਬਰ',city:'ਸ਼ਹਿਰ / ਪਿੰਡ',
+    langChange:'ਭਾਸ਼ਾ ਬਦਲੋ',settings:'ਸੈਟਿੰਗਾਂ',logout:'🚪 ਲੌਗਆਊਟ',
+    myListings:'ਮੇਰੀਆਂ Listings',savedItems:'ਸੇਵਡ Items',messages:'ਸੁਨੇਹੇ',
+    transactions:'ਲੈਣ-ਦੇਣ',location:'Location ਅਪਡੇਟ',
+    notifications:'ਸੂਚਨਾਵਾਂ',filters:'Search Filters',install:'App Install ਕਰੋ',
+    upi:'UPI ID ਸੈੱਟ ਕਰੋ',privacy:'Privacy & Safety',clearData:'ਸਾਰਾ Data ਸਾਫ਼ ਕਰੋ',
+    title:'ਸਿਰਲੇਖ *',price:'ਕੀਮਤ (₹) *',origPrice:'ਅਸਲ ਕੀਮਤ ₹',
+    desc:'ਵੇਰਵਾ',condition:'ਹਾਲਤ',negotiate:'ਮੋਲ-ਭਾਅ ਹੋ ਸਕਦਾ ਹੈ?',
+    upiAccept:'UPI ਸਵੀਕਾਰ ਕਰੋ?',featured:'Featured Ad — ₹99',
+    new:'✨ ਨਵਾਂ',used:'🔧 ਪੁਰਾਣਾ',refurb:'💎 Refurb',
+    category:'Category *',location2:'Location *',
+    saveProfile:'ਸੇਵ ਕਰੋ 💾',editProfile:'✏️ Profile ਸੋਧੋ',
+    langTitle:'ਭਾਸ਼ਾ ਚੁਣੋ',
+  },
+  bn:{
+    appName:'আপনা বাজার',appSub:'ভারতের বিশ্বস্ত মার্কেটপ্লেস 🇮🇳',
+    search:'খুঁজুন — গাড়ি, মোবাইল, আসবাবপত্র...',
+    sell:'বেচুন',home:'বাড়ি',saved:'সংরক্ষিত',chat:'চ্যাট',profile:'আমার',
+    post:'বিজ্ঞাপন দিন',postBtn:'বিজ্ঞাপন দিন — সম্পূর্ণ বিনামূল্যে 🚀',
+    noListings:'কোনো তালিকা পাওয়া যায়নি',noListingsSub:'ফিল্টার পরিবর্তন করুন',
+    buyer:'ক্রেতা',seller:'বিক্রেতা',buyerSub:'কিনতে চাই',sellerSub:'বিক্রি করতে চাই',
+    otpSend:'📱 OTP পাঠান & শুরু করুন',otpVerify:'✅ যাচাই করুন & লগইন',
+    name:'আপনার নাম',phone:'মোবাইল নম্বর',city:'শহর / গ্রাম',
+    langChange:'ভাষা পরিবর্তন',settings:'সেটিংস',logout:'🚪 লগআউট',
+    myListings:'আমার তালিকা',savedItems:'সংরক্ষিত আইটেম',messages:'বার্তা',
+    transactions:'লেনদেনের ইতিহাস',location:'অবস্থান আপডেট',
+    notifications:'বিজ্ঞপ্তি',filters:'ফিল্টার',install:'অ্যাপ ইনস্টল করুন',
+    upi:'UPI ID সেট করুন',privacy:'গোপনীয়তা',clearData:'সব ডেটা মুছুন',
+    title:'শিরোনাম *',price:'মূল্য (₹) *',origPrice:'আসল মূল্য ₹',
+    desc:'বিবরণ',condition:'অবস্থা',negotiate:'দর কষাকষি?',
+    upiAccept:'UPI গ্রহণ করুন?',featured:'Featured Ad — ₹99',
+    new:'✨ নতুন',used:'🔧 পুরানো',refurb:'💎 Refurb',
+    category:'বিভাগ *',location2:'অবস্থান *',
+    saveProfile:'সংরক্ষণ করুন 💾',editProfile:'✏️ প্রোফাইল সম্পাদনা',
+    langTitle:'ভাষা বেছে নিন',
+  },
+  mr:{
+    appName:'आपला बाजार',appSub:'भारताचा विश्वासू मार्केटप्लेस 🇮🇳',
+    search:'शोधा — गाडी, मोबाइल, फर्निचर...',
+    sell:'विका',home:'घर',saved:'जतन',chat:'बोला',profile:'माझे',
+    post:'जाहिरात द्या',postBtn:'जाहिरात द्या — पूर्णपणे मोफत 🚀',
+    noListings:'कोणतीही यादी सापडली नाही',noListingsSub:'फिल्टर बदला किंवा नवीन यादी जोडा',
+    buyer:'खरेदीदार',seller:'विक्रेता',buyerSub:'खरेदी करायची आहे',sellerSub:'विकायचे आहे',
+    otpSend:'📱 OTP पाठवा & सुरू करा',otpVerify:'✅ पडताळणी करा & लॉगिन',
+    name:'तुमचे नाव',phone:'मोबाइल नंबर',city:'शहर / गाव',
+    langChange:'भाषा बदला',settings:'सेटिंग्ज',logout:'🚪 लॉगआउट',
+    myListings:'माझ्या याद्या',savedItems:'जतन केलेल्या वस्तू',messages:'संदेश',
+    transactions:'व्यवहार इतिहास',location:'स्थान अपडेट',
+    notifications:'सूचना',filters:'शोध फिल्टर',install:'अॅप इन्स्टॉल करा',
+    upi:'UPI ID सेट करा',privacy:'गोपनीयता',clearData:'सर्व डेटा साफ करा',
+    title:'शीर्षक *',price:'किंमत (₹) *',origPrice:'मूळ किंमत ₹',
+    desc:'वर्णन',condition:'स्थिती',negotiate:'वाटाघाटी?',
+    upiAccept:'UPI स्वीकारा?',featured:'Featured Ad — ₹99',
+    new:'✨ नवीन',used:'🔧 जुने',refurb:'💎 Refurb',
+    category:'श्रेणी *',location2:'स्थान *',
+    saveProfile:'जतन करा 💾',editProfile:'✏️ प्रोफाइल संपादन',
+    langTitle:'भाषा निवडा',
+  },
+  gu:{
+    appName:'આપણો બજાર',appSub:'ભારતનો વિશ્વાસુ માર્કેટપ્લેસ 🇮🇳',
+    search:'શોધો — ગાડી, મોબાઈલ, ફર્નિચર...',
+    sell:'વેચો',home:'ઘર',saved:'સેવ',chat:'વાત',profile:'મારું',
+    post:'જાહેરાત આપો',postBtn:'જાહેરાત આપો — બિલ્કુલ મફત 🚀',
+    noListings:'કોઈ યાદી મળી નથી',noListingsSub:'ફિલ્ટર બદલો અથવા નવી યાદી ઉમેરો',
+    buyer:'ખરીદનાર',seller:'વેચનાર',buyerSub:'ખરીદવું છે',sellerSub:'વેચવું છે',
+    otpSend:'📱 OTP મોકલો & શરૂ કરો',otpVerify:'✅ ચકાસો & લૉગિન',
+    name:'તમારું નામ',phone:'મોબાઈલ નંબર',city:'શહેર / ગામ',
+    langChange:'ભાષા બદલો',settings:'સેટિંગ્સ',logout:'🚪 લૉગઆઉટ',
+    myListings:'મારી યાદીઓ',savedItems:'સેવ કરેલ',messages:'સંદેશ',
+    transactions:'વ્યવહાર ઇતિહાસ',location:'સ્થાન અપડેટ',
+    notifications:'સૂચનાઓ',filters:'ફિલ્ટર',install:'App ઇન્સ્ટૉલ કરો',
+    upi:'UPI ID સેટ કરો',privacy:'ગોપનીયતા',clearData:'બધો ડેટા સાફ કરો',
+    title:'શીર્ષક *',price:'કિંમત (₹) *',origPrice:'મૂળ કિંમત ₹',
+    desc:'વર્ણન',condition:'સ્થિતિ',negotiate:'ભાવ-ચડાવ?',
+    upiAccept:'UPI સ્વીકારો?',featured:'Featured Ad — ₹99',
+    new:'✨ નવું',used:'🔧 જૂનું',refurb:'💎 Refurb',
+    category:'કૅટેગરી *',location2:'સ્થાન *',
+    saveProfile:'સેવ કરો 💾',editProfile:'✏️ પ્રોફાઇલ સંપાદિત',
+    langTitle:'ભાષા પસંદ કરો',
+  },
+  ta:{
+    appName:'அப்னா பஜார்',appSub:'இந்தியாவின் நம்பகமான சந்தை 🇮🇳',
+    search:'தேடுங்கள் — கார், மொபைல், தளபாடம்...',
+    sell:'விற்க',home:'வீடு',saved:'சேமித்த',chat:'அரட்டை',profile:'என்னுடையது',
+    post:'விளம்பரம் இடுங்கள்',postBtn:'விளம்பரம் இடுங்கள் — முற்றிலும் இலவசம் 🚀',
+    noListings:'பட்டியல் எதுவும் இல்லை',noListingsSub:'வடிகட்டியை மாற்றவும்',
+    buyer:'வாங்குபவர்',seller:'விற்பவர்',buyerSub:'வாங்க விரும்புகிறேன்',sellerSub:'விற்க விரும்புகிறேன்',
+    otpSend:'📱 OTP அனுப்பு & தொடங்கு',otpVerify:'✅ சரிபார்க்க & உள்நுழை',
+    name:'உங்கள் பெயர்',phone:'மொபைல் எண்',city:'நகரம் / கிராமம்',
+    langChange:'மொழி மாற்று',settings:'அமைப்புகள்',logout:'🚪 வெளியேறு',
+    myListings:'என் பட்டியல்கள்',savedItems:'சேமித்த பொருட்கள்',messages:'செய்திகள்',
+    transactions:'பரிவர்த்தனை வரலாறு',location:'இடம் புதுப்பி',
+    notifications:'அறிவிப்புகள்',filters:'தேடல் வடிகட்டி',install:'செயலி நிறுவு',
+    upi:'UPI ID அமை',privacy:'தனியுரிமை',clearData:'அனைத்தையும் நீக்கு',
+    title:'தலைப்பு *',price:'விலை (₹) *',origPrice:'அசல் விலை ₹',
+    desc:'விளக்கம்',condition:'நிலை',negotiate:'பேரம் பேசலாமா?',
+    upiAccept:'UPI ஏற்கவும்?',featured:'Featured Ad — ₹99',
+    new:'✨ புதியது',used:'🔧 பழையது',refurb:'💎 Refurb',
+    category:'வகை *',location2:'இடம் *',
+    saveProfile:'சேமி 💾',editProfile:'✏️ சுயவிவரம் திருத்து',
+    langTitle:'மொழி தேர்ந்தெடு',
+  },
+  te:{
+    appName:'అప్నా బజార్',appSub:'భారతదేశపు నమ్మకమైన మార్కెట్‌ప్లేస్ 🇮🇳',
+    search:'వెతకండి — కారు, మొబైల్, ఫర్నిచర్...',
+    sell:'అమ్మండి',home:'ఇల్లు',saved:'సేవ్',chat:'మాట్లాడు',profile:'నాది',
+    post:'ప్రకటన ఇవ్వండి',postBtn:'ప్రకటన ఇవ్వండి — పూర్తి ఉచితంగా 🚀',
+    noListings:'జాబితాలు కనుగొనబడలేదు',noListingsSub:'ఫిల్టర్‌ని మార్చండి',
+    buyer:'కొనుగోలుదారు',seller:'విక్రేత',buyerSub:'కొనాలనుకుంటున్నాను',sellerSub:'అమ్మాలనుకుంటున్నాను',
+    otpSend:'📱 OTP పంపు & ప్రారంభించు',otpVerify:'✅ ధృవీకరించు & లాగిన్',
+    name:'మీ పేరు',phone:'మొబైల్ నంబర్',city:'నగరం / గ్రామం',
+    langChange:'భాష మార్చు',settings:'సెట్టింగ్‌లు',logout:'🚪 లాగ్‌అవుట్',
+    myListings:'నా జాబితాలు',savedItems:'సేవ్ చేసిన వస్తువులు',messages:'సందేశాలు',
+    transactions:'లావాదేవీ చరిత్ర',location:'స్థానం నవీకరించు',
+    notifications:'నోటిఫికేషన్‌లు',filters:'ఫిల్టర్‌లు',install:'యాప్ ఇన్‌స్టాల్',
+    upi:'UPI ID సెట్',privacy:'గోప్యత',clearData:'అన్ని డేటా తొలగించు',
+    title:'శీర్షిక *',price:'ధర (₹) *',origPrice:'అసలు ధర ₹',
+    desc:'వివరణ',condition:'స్థితి',negotiate:'బేరమాడవచ్చా?',
+    upiAccept:'UPI అంగీకరించాలా?',featured:'Featured Ad — ₹99',
+    new:'✨ కొత్తది',used:'🔧 పాతది',refurb:'💎 Refurb',
+    category:'వర్గం *',location2:'స్థానం *',
+    saveProfile:'సేవ్ చేయి 💾',editProfile:'✏️ ప్రొఫైల్ సవరించు',
+    langTitle:'భాష ఎంచుకోండి',
+  },
+  kn:{
+    appName:'ಅಪ್ನಾ ಬಜಾರ್',appSub:'ಭಾರತದ ವಿಶ್ವಾಸಾರ್ಹ ಮಾರುಕಟ್ಟೆ 🇮🇳',
+    search:'ಹುಡುಕಿ — ಕಾರು, ಮೊಬೈಲ್, ಪೀಠೋಪಕರಣ...',
+    sell:'ಮಾರಿ',home:'ಮನೆ',saved:'ಉಳಿಸಿದ',chat:'ಮಾತು',profile:'ನನ್ನದು',
+    post:'ಜಾಹೀರಾತು ನೀಡಿ',postBtn:'ಜಾಹೀರಾತು ನೀಡಿ — ಸಂಪೂರ್ಣ ಉಚಿತ 🚀',
+    noListings:'ಯಾವುದೇ ಪಟ್ಟಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ',noListingsSub:'ಫಿಲ್ಟರ್ ಬದಲಿಸಿ',
+    buyer:'ಖರೀದಿದಾರ',seller:'ಮಾರಾಟಗಾರ',buyerSub:'ಖರೀದಿಸಲು ಬಯಸುತ್ತೇನೆ',sellerSub:'ಮಾರಾಟ ಮಾಡಲು ಬಯಸುತ್ತೇನೆ',
+    otpSend:'📱 OTP ಕಳುಹಿಸಿ & ಪ್ರಾರಂಭಿಸಿ',otpVerify:'✅ ಪರಿಶೀಲಿಸಿ & ಲಾಗಿನ್',
+    name:'ನಿಮ್ಮ ಹೆಸರು',phone:'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ',city:'ನಗರ / ಹಳ್ಳಿ',
+    langChange:'ಭಾಷೆ ಬದಲಿಸಿ',settings:'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',logout:'🚪 ಲಾಗ್‌ಔಟ್',
+    myListings:'ನನ್ನ ಪಟ್ಟಿಗಳು',savedItems:'ಉಳಿಸಿದ ವಸ್ತುಗಳು',messages:'ಸಂದೇಶಗಳು',
+    transactions:'ವ್ಯವಹಾರ ಇತಿಹಾಸ',location:'ಸ್ಥಳ ನವೀಕರಿಸಿ',
+    notifications:'ಅಧಿಸೂಚನೆಗಳು',filters:'ಫಿಲ್ಟರ್‌ಗಳು',install:'ಅಪ್ಲಿಕೇಶನ್ ಅಳವಡಿಸಿ',
+    upi:'UPI ID ಹೊಂದಿಸಿ',privacy:'ಗೋಪ್ಯತೆ',clearData:'ಎಲ್ಲ ಡೇಟಾ ತೆರವು',
+    title:'ಶೀರ್ಷಿಕೆ *',price:'ಬೆಲೆ (₹) *',origPrice:'ಮೂಲ ಬೆಲೆ ₹',
+    desc:'ವಿವರಣೆ',condition:'ಸ್ಥಿತಿ',negotiate:'ಬೆಲೆ ಮಾತುಕತೆ?',
+    upiAccept:'UPI ಸ್ವೀಕರಿಸಿ?',featured:'Featured Ad — ₹99',
+    new:'✨ ಹೊಸದು',used:'🔧 ಹಳೆಯದು',refurb:'💎 Refurb',
+    category:'ವರ್ಗ *',location2:'ಸ್ಥಳ *',
+    saveProfile:'ಉಳಿಸಿ 💾',editProfile:'✏️ ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ',
+    langTitle:'ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ',
+  },
+  ml:{
+    appName:'അപ്നാ ബസാർ',appSub:'ഇന്ത്യയുടെ വിശ്വസനീയ മാർക്കറ്റ്പ്ലേസ് 🇮🇳',
+    search:'തിരയുക — കാർ, മൊബൈൽ, ഫർണിച്ചർ...',
+    sell:'വിൽക്കുക',home:'വീട്',saved:'സേവ്',chat:'ചാറ്റ്',profile:'എന്റേത്',
+    post:'പരസ്യം നൽകുക',postBtn:'പരസ്യം നൽകുക — പൂർണ്ണമായും സൗജന്യം 🚀',
+    noListings:'ലിസ്റ്റിംഗുകൾ കണ്ടെത്തിയില്ല',noListingsSub:'ഫിൽറ്റർ മാറ്റുക',
+    buyer:'വാങ്ങുന്നയാൾ',seller:'വിൽക്കുന്നയാൾ',buyerSub:'വാങ്ങണം',sellerSub:'വിൽക്കണം',
+    otpSend:'📱 OTP അയക്കുക & ആരംഭിക്കുക',otpVerify:'✅ സ്ഥിരീകരിക്കുക & ലോഗിൻ',
+    name:'നിങ്ങളുടെ പേര്',phone:'മൊബൈൽ നമ്പർ',city:'നഗരം / ഗ്രാമം',
+    langChange:'ഭാഷ മാറ്റുക',settings:'ക്രമീകരണങ്ങൾ',logout:'🚪 ലോഗൗട്ട്',
+    myListings:'എന്റെ ലിസ്റ്റിംഗുകൾ',savedItems:'സേവ് ചെയ്തവ',messages:'സന്ദേശങ്ങൾ',
+    transactions:'ഇടപാട് ചരിത്രം',location:'സ്ഥാനം അപ്ഡേറ്റ്',
+    notifications:'അറിയിപ്പുകൾ',filters:'ഫിൽറ്ററുകൾ',install:'ആപ്പ് ഇൻസ്റ്റോൾ',
+    upi:'UPI ID സജ്ജമാക്കുക',privacy:'സ്വകാര്യത',clearData:'എല്ലാ ഡേറ്റയും മായ്ക്കുക',
+    title:'ശീർഷകം *',price:'വില (₹) *',origPrice:'യഥാർത്ഥ വില ₹',
+    desc:'വിവരണം',condition:'അവസ്ഥ',negotiate:'വില ചർച്ച ചെയ്യാമോ?',
+    upiAccept:'UPI സ്വീകരിക്കുക?',featured:'Featured Ad — ₹99',
+    new:'✨ പുതിയത്',used:'🔧 പഴയത്',refurb:'💎 Refurb',
+    category:'വിഭാഗം *',location2:'സ്ഥാനം *',
+    saveProfile:'സേവ് ചെയ്യുക 💾',editProfile:'✏️ പ്രൊഫൈൽ എഡിറ്റ്',
+    langTitle:'ഭാഷ തിരഞ്ഞെടുക്കുക',
+  },
+  ur:{
+    appName:'اپنا بازار',appSub:'ہندوستان کا قابل اعتماد مارکیٹ پلیس 🇮🇳',
+    search:'تلاش کریں — گاڑی، موبائل، فرنیچر...',
+    sell:'بیچیں',home:'گھر',saved:'محفوظ',chat:'بات',profile:'میرا',
+    post:'اشتہار دیں',postBtn:'اشتہار دیں — بالکل مفت 🚀',
+    noListings:'کوئی فہرست نہیں ملی',noListingsSub:'فلٹر تبدیل کریں',
+    buyer:'خریدار',seller:'بیچنے والا',buyerSub:'خریدنا چاہتا ہوں',sellerSub:'بیچنا چاہتا ہوں',
+    otpSend:'📱 OTP بھیجیں & شروع کریں',otpVerify:'✅ تصدیق کریں & لاگ ان',
+    name:'آپ کا نام',phone:'موبائل نمبر',city:'شہر / گاؤں',
+    langChange:'زبان تبدیل کریں',settings:'ترتیبات',logout:'🚪 لاگ آؤٹ',
+    myListings:'میری فہرستیں',savedItems:'محفوظ اشیاء',messages:'پیغامات',
+    transactions:'لین دین کی تاریخ',location:'مقام اپ ڈیٹ',
+    notifications:'اطلاعات',filters:'فلٹرز',install:'ایپ انسٹال کریں',
+    upi:'UPI ID سیٹ کریں',privacy:'رازداری',clearData:'تمام ڈیٹا صاف کریں',
+    title:'عنوان *',price:'قیمت (₹) *',origPrice:'اصل قیمت ₹',
+    desc:'تفصیل',condition:'حالت',negotiate:'مول بھاؤ؟',
+    upiAccept:'UPI قبول کریں؟',featured:'Featured Ad — ₹99',
+    new:'✨ نیا',used:'🔧 پرانا',refurb:'💎 Refurb',
+    category:'زمرہ *',location2:'مقام *',
+    saveProfile:'محفوظ کریں 💾',editProfile:'✏️ پروفائل ترمیم',
+    langTitle:'زبان منتخب کریں',
+  },
+};
+
+let currentLang=localStorage.getItem('ab_lang')||'hi';
+
+function t(key){return (T[currentLang]&&T[currentLang][key])||T['hi'][key]||key;}
+
+function openLangModal(){
+  const g=$('lang-grid');if(!g)return;
+  g.innerHTML=LANGS.map(l=>`
+    <div onclick="setLang('${l.code}')" style="background:${currentLang===l.code?'rgba(255,107,26,.14)':'var(--card2)'};border:1.5px solid ${currentLang===l.code?'rgba(255,107,26,.5)':'var(--bdr)'};border-radius:12px;padding:12px 10px;cursor:pointer;transition:all .15s;text-align:center">
+      <div style="font-size:22pxpx;margin-bottom:4px">${l.flag}</div>
+      <div style="font-weight:800;font-size:13pxpx;color:${currentLang===l.code?'var(--or2)':'var(--txt)'};margin-bottom:2px">${l.name}</div>
+      <div style="font-size:11pxpx;color:var(--txt4)">${l.eng}</div>
+      ${currentLang===l.code?'<div style="color:var(--or2);font-size:11pxpx;font-weight:700;margin-top:3px">✓ Selected</div>':''}
+    </div>
+  `).join('');
+  $('lang-modal').classList.add('open');
+}
+
+function setLang(code){
+  currentLang=code;
+  localStorage.setItem('ab_lang',code);
+  $('lang-modal').classList.remove('open');
+  applyLang();
+  toast('✅ '+LANGS.find(l=>l.code===code)?.name+' selected!','success');
+}
+
+function applyLang(){
+  // RTL for Urdu
+  document.body.style.direction=currentLang==='ur'?'rtl':'ltr';
+  document.documentElement.lang=currentLang;
+
+  // Update lang display badges
+  const langName=LANGS.find(l=>l.code===currentLang)?.name||'हिंदी';
+  if($('lang-display'))$('lang-display').textContent=langName;
+  if($('lang-display-login'))$('lang-display-login').textContent=langName;
+
+  // LOGIN PAGE
+  const loSub=$('lo-sub-txt');if(loSub)loSub.textContent=t('appSub');
+  const roleHdr=$('role-hdr-txt');if(roleHdr)roleHdr.textContent=t('langTitle').toUpperCase()+' / BHASHA CHUNEIN';
+  if($('role-buyer-lbl'))$('role-buyer-lbl').textContent=t('buyer');
+  if($('role-buyer-sub'))$('role-buyer-sub').textContent=t('buyerSub');
+  if($('role-seller-lbl'))$('role-seller-lbl').textContent=t('seller');
+  if($('role-seller-sub'))$('role-seller-sub').textContent=t('sellerSub');
+  if($('lf-phone-lbl'))$('lf-phone-lbl').textContent='📱 '+t('phone');
+  if($('lf-name-lbl'))$('lf-name-lbl').textContent='🧑 '+t('name');
+  if($('lf-city-lbl'))$('lf-city-lbl').textContent='📍 '+t('city');
+  if($('otp-send-btn'))$('otp-send-btn').textContent=t('otpSend');
+  if($('otp-verify-btn'))$('otp-verify-btn').textContent=t('otpVerify');
+
+  // HEADER
+  if($('hdr-brand-txt'))$('hdr-brand-txt').textContent=t('appName')+' 🛍️';
+
+  // SEARCH
+  if($('srch'))$('srch').placeholder=t('search');
+
+  // BOTTOM NAV
+  if($('nb-lbl-home'))$('nb-lbl-home').textContent=t('home');
+  if($('nb-lbl-saved'))$('nb-lbl-saved').textContent=t('saved');
+  if($('nb-lbl-sell'))$('nb-lbl-sell').textContent=t('sell');
+  if($('nb-lbl-chat'))$('nb-lbl-chat').textContent=t('chat');
+  if($('nb-lbl-profile'))$('nb-lbl-profile').textContent=t('profile');
+
+  // POST FORM
+  if($('post-modal-title')&&!window.editingListingId)$('post-modal-title').textContent='📸 '+t('post');
+  if($('post-submit-btn')&&!window.editingListingId)$('post-submit-btn').textContent=t('postBtn');
+  if($('pf-ti'))$('pf-ti').placeholder='e.g. iPhone 14, Honda Activa...';
+  if($('pf-di'))$('pf-di').placeholder=t('desc')+'...';
+
+  // PROFILE MENU
+  if($('menu-mylistings'))$('menu-mylistings').textContent=t('myListings');
+  if($('menu-saved'))$('menu-saved').textContent=t('savedItems');
+  if($('menu-messages'))$('menu-messages').textContent=t('messages');
+  if($('menu-txn'))$('menu-txn').textContent=t('transactions');
+  if($('menu-upi'))$('menu-upi').textContent=t('upi');
+  if($('menu-location'))$('menu-location').textContent=t('location');
+  if($('menu-notifs'))$('menu-notifs').textContent=t('notifications');
+  if($('menu-filters'))$('menu-filters').textContent=t('filters');
+  if($('menu-install'))$('menu-install').textContent=t('install');
+  if($('menu-privacy'))$('menu-privacy').textContent=t('privacy');
+  if($('menu-clear'))$('menu-clear').textContent=t('clearData');
+  if($('logout-btn-txt'))$('logout-btn-txt').textContent=t('logout');
+  if($('menu-lang'))$('menu-lang').textContent=t('langChange');
+  if($('menu-editprof'))$('menu-editprof').textContent=t('editProfile');
+
+  // COND BUTTONS
+  if($('c-new'))$('c-new').textContent=t('new');
+  if($('c-used'))$('c-used').textContent=t('used');
+  if($('c-refurb'))$('c-refurb').textContent=t('refurb');
+
+  // Re-render listings to update empty state text
+  if(typeof renderListings==='function')renderListings();
+}
+
+// Init language on load
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>applyLang(),200);
+});
+</script>
+</body>
+</html>
